@@ -4,14 +4,38 @@ namespace Tp2AAT
 {
     class Program
     {
+        static Tarjeta inicio(Tarjeta tarjeta)
+        {
+            Console.WriteLine("¿Tiene franquicia de boleto gratuito? (s/n)");
+            string tieneBoletoGratuito = Console.ReadLine();
+            if (tieneBoletoGratuito.ToLower() == "s")
+            {
+                tarjeta = new BoletoGratuito(tarjeta.Saldo);
+            }
+            else
+            {
+                Console.WriteLine("¿Tiene franquicia de medio boleto? (s/n)");
+                string tieneFranquicia = Console.ReadLine();
+                if (tieneFranquicia.ToLower() == "s")
+                {
+                    tarjeta = new MedioBoleto(tarjeta.Saldo);
+                }
+            }
+            return tarjeta;
+        }
+
+  
+        
         public static void Main()
         {
             Colectivo colectivo = new Colectivo();
             Tarjeta tarjeta = new Tarjeta(0);
-
-            bool salir = false;
+            bool salir = false;         
+            tarjeta = inicio(tarjeta);
+           
             while (!salir)
             {
+
                 Console.WriteLine("Elija una opción:");
                 Console.WriteLine("1. Consultar saldo de tarjeta");
                 Console.WriteLine("2. Cargar saldo en tarjeta");
@@ -19,7 +43,6 @@ namespace Tp2AAT
                 Console.WriteLine("4. Salir");
 
                 string opcion = Console.ReadLine();
-
                 switch (opcion)
                 {
                     case "1":
@@ -39,20 +62,22 @@ namespace Tp2AAT
                         break;
 
                     case "3":
-                        // Pregunta solo cuando se selecciona la opción de pagar
-                        Console.WriteLine("¿Tiene franquicia de medio boleto? (s/n)");
-                        string tieneFranquicia = Console.ReadLine();
-
-                        // Si el usuario responde que sí, convierte la tarjeta a MedioBoleto
-                        if (tieneFranquicia.ToLower() == "s")
-                        {
-                            tarjeta = new MedioBoleto(tarjeta.Saldo); 
-                        }
 
                         Boleto boleto = colectivo.PagarCon(tarjeta);
                         if (boleto != null)
                         {
-                            Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
+                            if (tarjeta is BoletoGratuito)
+                            {
+                                Console.WriteLine($"Viaje pagado con boleto gratuito. Saldo restante: ${boleto.SaldoRestante}");
+                            }
+                            if (tarjeta is MedioBoleto)
+                            {
+                                Console.WriteLine($"Viaje pagado con medio boleto. Saldo restante: ${boleto.SaldoRestante}");
+                            }
+                            else{
+                                   Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
+                            }
+                         
                         }
                         else
                         {

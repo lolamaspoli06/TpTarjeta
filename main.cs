@@ -4,32 +4,11 @@ namespace Tp2AAT
 {
     class Program
     {
-        static Tarjeta inicio(Tarjeta tarjeta)
-        {
-          /*  Console.WriteLine("¿Tiene franquicia de boleto gratuito? (s/n)");
-            string tieneBoletoGratuito = Console.ReadLine();
-            if (tieneBoletoGratuito.ToLower() == "s")
-            {
-                tarjeta = new BoletoGratuito(tarjeta.Saldo);
-            }
-            else
-            {*/
-                Console.WriteLine("¿Tiene franquicia de medio boleto? (s/n)");
-                string tieneFranquicia = Console.ReadLine();
-                if (tieneFranquicia.ToLower() == "s")
-                {
-                    tarjeta = new MedioBoleto(tarjeta.Saldo);
-                }
-           // }
-            return tarjeta;
-        }
-
-
-        public static void Main()
+        public static void Main(string[] args) // Asegúrate de tener el parámetro args
         {
             Colectivo colectivo = new Colectivo("Línea 120"); 
 
-            Tarjeta tarjeta = new Tarjeta(0,null); 
+            Tarjeta tarjeta = new Tarjeta(0, null); 
             bool salir = false;
             tarjeta = inicio(tarjeta);
 
@@ -51,9 +30,16 @@ namespace Tp2AAT
 
                     case "2":
                         Console.WriteLine("Ingrese el monto a cargar: $2000, $3000, $4000, $5000, $6000, $7000, $8000, $9000");
-                        if (decimal.TryParse(Console.ReadLine(), out decimal monto) && tarjeta.CargarSaldo(monto))
+                        string input = Console.ReadLine();
+                        if (!string.IsNullOrEmpty(input) && decimal.TryParse(input, out decimal monto))
                         {
+                             List<decimal> montosValidos = new List<decimal> { 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 };
+                             if (montosValidos.Contains(monto)){
+                            tarjeta.CargarSaldo(monto);
                             Console.WriteLine("Carga realizada con éxito.");
+                             } else {
+                                Console.WriteLine ("Monto inválido");
+                             }
                         }
                         else
                         {
@@ -83,6 +69,18 @@ namespace Tp2AAT
                         break;
                 }
             }
+        }
+
+        // Debes mantener el método inicio aquí también
+        static Tarjeta inicio(Tarjeta tarjeta)
+        {
+            Console.WriteLine("¿Tiene franquicia de medio boleto? (s/n)");
+            string tieneFranquicia = Console.ReadLine();
+            if (tieneFranquicia.ToLower() == "s")
+            {
+                tarjeta = new MedioBoleto(tarjeta.Saldo);
+            }
+            return tarjeta;
         }
     }
 }

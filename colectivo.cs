@@ -1,22 +1,21 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using BoletoNamespace;
+using TarjetaNamespace;
+namespace ColectivoNamespace;
 
-namespace Tp2AAT
+public class Colectivo
 {
-    public class Colectivo
+
+    public Boleto PagarCon(Tarjeta tarjeta)
     {
-    
-        public Boleto PagarCon(Tarjeta tarjeta)
+        if (tarjeta.DescontarPasaje())
         {
-            {
-                if (tarjeta.DescontarPasaje()){
-                    return new Boleto(tarjeta.Saldo);
-                }
-                else{
-                    return null;
-                }
-            }
-            }
+            return new Boleto(tarjeta.Saldo);
+        }
+        else
+        {
+            return null;
         }
     }
-
+}

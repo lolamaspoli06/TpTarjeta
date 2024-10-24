@@ -1,39 +1,66 @@
-public class Tarjeta
-{
-    protected decimal tarifaBasica = 940;  // Asegúrate de usar nombres consistentes en minúsculas
-    protected decimal saldoNegativoPermitido = 480;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 
-    protected decimal saldo;
-    protected decimal limiteSaldo = 9900;
-
-    public Tarjeta(decimal saldoInicial)
+namespace TarjetaNamespace;
+    public class Tarjeta
     {
-        saldo = saldoInicial;
-    }
+        private decimal saldo;
+        private readonly decimal limiteSaldo = 9900;
+        private readonly decimal tarifaBasica = 940;
 
-    public decimal Saldo
-    {
-        get { return saldo; }
-    }
+        public Tarjeta(decimal saldoInicial)
+        {
+            saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
+        }
+
+        public decimal Saldo
+        {
+            get { return saldo; }
+        }
 
     public bool CargarSaldo(decimal monto)
     {
-        decimal nuevoSaldo = saldo + monto;
-        if (nuevoSaldo > limiteSaldo)
+        if (monto <= limiteSaldo && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000)) { 
+            decimal nuevoSaldo = saldo + monto;
+            saldo = nuevoSaldo;
+            return true;
+
+        } else
         {
             return false;
         }
-        saldo = nuevoSaldo;
-        return true;
+        }
+
+        public virtual bool DescontarPasaje()
+        {
+            if (saldo >= tarifaBasica)
+            {
+                saldo -= tarifaBasica;
+                return true;
+            }
+            return false;
+        }
+
+    public class MedioBoleto : Tarjeta
+    {
+        public MedioBoleto(decimal saldoInicial) : base(saldoInicial) { }
+
+        public override bool DescontarPasaje()
+        {
+            decimal tarifaConDescuento = tarifaBasica / 2;
+                saldo -= tarifaConDescuento;
+                return true;
+        }
     }
 
-    public virtual bool DescontarPasaje()
+    public class BoletoGratuito : Tarjeta
     {
-        if (saldo >= tarifaBasica || (saldo + saldoNegativoPermitido >= tarifaBasica))
+        public BoletoGratuito(decimal saldoInicial) : base(saldoInicial) { }
+
+        public override bool DescontarPasaje()
         {
-            saldo -= tarifaBasica;
             return true;
         }
-        return false;
     }
 }

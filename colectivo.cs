@@ -14,10 +14,9 @@ public class Colectivo
         this.Linea = linea;
     }
 
-
     public Boleto PagarCon(Tarjeta tarjeta)
     {
-        decimal totalAbonado = tarjeta.CalcularTarifa(tarjeta); 
+        decimal totalAbonado = tarjeta.CalcularTarifa(tarjeta);
         string descripcionExtra = "";
 
         if (tarjeta.SaldoNegativo > 0)
@@ -25,35 +24,37 @@ public class Colectivo
             descripcionExtra = $"Abona saldo {tarjeta.SaldoNegativo}";
         }
 
-        if (tarjeta is MedioBoleto  || tarjeta is BoletoGratuito)
+        if (tarjeta is MedioBoleto || tarjeta is BoletoGratuito)
         {
+            if (tarjeta.ViajesHoy >= 4)
+            {
+
+                totalAbonado = tarifaBasica; 
+            }
 
             if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
             {
                 Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos.");
+                return null; 
+            }
 
-                if (!tarjeta.DescontarPasaje(totalAbonado))
-                {
-                    Console.WriteLine("Saldo insuficiente para descontar la tarifa básica.");
-                    return null;
-                }
-                totalAbonado = tarifaBasica;
+            if (tarjeta.DescontarPasaje(totalAbonado))
+            {
+                tarjeta.ActualizarUltimoUso();
+                tarjeta.ViajesHoy++; 
+                return new Boleto(
+                    DateTime.Now,
+                    tarjeta.GetType().Name,
+                    this.Linea,
+                    totalAbonado,
+                    tarjeta.Saldo,
+                    tarjeta.Id.ToString(),
+                    descripcionExtra
+                );
             }
         }
 
-        if (tarjeta.DescontarPasaje(totalAbonado))
-        {
-            tarjeta.ActualizarUltimoUso();
-            return new Boleto(
-                DateTime.Now,
-                tarjeta.GetType().Name,
-                this.Linea,
-                totalAbonado,
-                tarjeta.Saldo,
-                tarjeta.Id.ToString(),
-                descripcionExtra
-            );
-        }
-        return null;
+        return null; 
     }
+
 }

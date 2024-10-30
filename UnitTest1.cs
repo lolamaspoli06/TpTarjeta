@@ -1,27 +1,43 @@
 using NUnit.Framework;
 using TarjetaNamespace;
-
 [TestFixture]
 public class TarjetaTests
 {
     [Test]
-    public void VerificarAcreditacionTrasViaje()
+    public void CargarSaldo_SuperaLimite_SaldoPendienteAlmacenado()
     {
-        // Arrange: Crear una tarjeta con saldo inicial
-        var tarjeta = new Tarjeta(32000); // Inicializando con saldo de 32,000
-        tarjeta.CargarSaldo(10000); // Intentar cargar 10,000 (excediendo el límite)
+        
+        var tarjeta = new Tarjeta(35000); 
+        decimal montoACargar = 5000; 
 
-        // Act: Simular un viaje que descuenta la tarifa básica
-        bool viajeExitoso = tarjeta.DescontarPasaje(tarjeta.CalcularTarifa(tarjeta)); // Descontar tarifa básica
+        bool resultadoCarga = tarjeta.CargarSaldo(montoACargar);
 
-        // Verificación del estado de la tarjeta después del viaje
-        Assert.IsTrue(viajeExitoso, "El viaje debería haber sido exitoso.");
-
-        // Acreditar el saldo pendiente
-        tarjeta.AcreditarSaldoPendiente();
-
-        // Assert: Verificar que el saldo se ha acreditado correctamente
-        Assert.AreEqual(36000, tarjeta.Saldo, "El saldo tras la acreditación debe ser 36,000.");
-        Assert.AreEqual(4000, tarjeta.SaldoPendiente, "El saldo pendiente debe ser 4,000.");
+        Assert.That(resultadoCarga, Is.True, "La carga deberia ser exitosa.");
+        Assert.That(tarjeta.Saldo, Is.EqualTo(36000), $"El saldo deberia estar en el máximo permitido, pero fue {tarjeta.Saldo}.");
+        Assert.That(tarjeta.SaldoPendiente, Is.EqualTo(4000), $"El saldo pendiente deberia ser 4000, pero fue {tarjeta.SaldoPendiente}.");
     }
+    [Test]
+    public void RealizarViaje_AcreditaSaldoPendiente()
+    {
+       
+        var tarjeta = new Tarjeta(36000); 
+        tarjeta.CargarSaldo(5000); 
+
+        var colectivo = new ColectivoNamespace.Colectivo("Línea 120");
+        decimal saldoAntesDeViaje = tarjeta.Saldo;
+
+        var boleto = colectivo.PagarCon(tarjeta); // Realiza el viaje
+
+
+        // Assert
+        Assert.That(boleto, Is.Not.Null, "El boleto debería ser creado después del viaje.");
+        Assert.That(tarjeta.Saldo, Is.EqualTo(36000), "El saldo debería reacreditar hasta el máximo.");
+        Assert.That(tarjeta.SaldoPendiente, Is.EqualTo(4060), "El saldo pendiente debería reflejar la diferencia después del viaje que es 4060.");
+    }
+
+
+
+
 }
+
+

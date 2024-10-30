@@ -1,4 +1,4 @@
-﻿//using System;
+﻿using System;
 using BoletoNamespace;
 using ColectivoNamespace;
 using TarjetaNamespace;

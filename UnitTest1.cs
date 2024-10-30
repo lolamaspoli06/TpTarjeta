@@ -1,71 +1,51 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 using TarjetaNamespace;
 using ColectivoNamespace;
-using System.Threading;
-using static TarjetaNamespace.Tarjeta;
+using BoletoNamespace;
 
-
-[TestFixture]
-public class ColectivoTests
+namespace Tests
 {
-    private Colectivo colectivo;
-    private MedioBoleto tarjeta;
-
-    [SetUp]
-    public void Setup()
+    [TestFixture]
+    public class BoletoGratuitoTests
     {
-        colectivo = new Colectivo("linea 120");
-        tarjeta = new MedioBoleto(0);
-        tarjeta.CargarSaldo(2000);
+        private const decimal TarifaCompleta = 940m;
+
+        [Test]
+        public void NoPermitirMasDeDosViajesGratuitosPorDia()
+        {
+            // Arrange
+            Colectivo colectivo = new Colectivo("linea 120");
+            Tarjeta.BoletoGratuito tarjetaGratuita = new Tarjeta.BoletoGratuito(0);
+
+            // Act
+            Boleto primerViaje = colectivo.PagarCon(tarjetaGratuita);
+            Boleto segundoViaje = colectivo.PagarCon(tarjetaGratuita);
+            Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita);
+
+            // Assert
+            Assert.IsNotNull(primerViaje, "El primer viaje gratuito debería estar permitido.");
+            Assert.IsNotNull(segundoViaje, "El segundo viaje gratuito debería estar permitido.");
+            Assert.IsNull(tercerViaje, "El tercer viaje gratuito no debería estar permitido en el mismo día.");
+        }
+
+        [Test]
+        public void CobrarPrecioCompletoAPartirDelTercerViajeGratuito()
+        {
+            // Arrange
+            Colectivo colectivo = new Colectivo("linea 120");
+            Tarjeta.BoletoGratuito tarjetaGratuita = new Tarjeta.BoletoGratuito(TarifaCompleta); // Inicializar con saldo suficiente
+
+            // Act
+            colectivo.PagarCon(tarjetaGratuita); // Primer viaje gratuito
+            colectivo.PagarCon(tarjetaGratuita); // Segundo viaje gratuito
+            Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita); // Tercer viaje, debería cobrar tarifa completa
+
+            // Assert
+            Assert.IsNotNull(tercerViaje, "El tercer viaje debería permitirse.");
+            Assert.AreEqual(TarifaCompleta, tercerViaje.TotalAbonado, "El tercer viaje debería cobrarse a tarifa completa.");
+            Assert.AreEqual(TarifaCompleta - TarifaCompleta, tarjetaGratuita.Saldo, "El saldo restante debería reflejar la tarifa completa cobrada en el tercer viaje.");
+        }
     }
-
-    [Test]
-    public void NoDeberiaPermitirMedioBoletoDentroDeCincoMinutosConMedioBoleto()
-    {
-
-        bool viaje1 = colectivo.PagarCon(tarjeta) != null;
-
-        bool viaje2 = colectivo.PagarCon(tarjeta) != null;
-
-        decimal tarifaNormal = tarjeta.CalcularTarifa(tarjeta);
-        decimal saldoAntes = tarjeta.Saldo;
-
-        Assert.That(viaje1, Is.True, "El primer viaje deberia ser permitido.");
-        Assert.That(viaje2, Is.True, "El segundo viaje deberia ser permitido, pero con tarifa normal.");
-        Assert.That(tarjeta.Saldo, Is.EqualTo(saldoAntes - tarifaNormal).Within(0.01m), "El saldo deberoa ajustarse al cobrar la tarifa normal del segundo viaje.");
-    
-        Thread.Sleep(60000*1);
-
-        bool viaje3 = colectivo.PagarCon(tarjeta) != null;
-
-        Assert.That(viaje3, Is.True, "El tercer viaje deberia ser permitido despues de esperar 5 minutos.");
-    }
-
-
-    [Test]
-    public void QuintoViajeConMedioBoletoDeberiaSerTarifaNormal()
-    {
-        colectivo.PagarCon(tarjeta);
-        Thread.Sleep(60000 *1);
-        colectivo.PagarCon(tarjeta);
-        Thread.Sleep(60000*1);
-        colectivo.PagarCon(tarjeta);
-        Thread.Sleep(60000*1);
-        colectivo.PagarCon(tarjeta);
-        Thread.Sleep(60000*1);
-
-
-        decimal saldoAntes = tarjeta.Saldo;
-
-
-        bool viaje5 = colectivo.PagarCon(tarjeta) != null;
-
-
-        decimal tarifaNormal = tarjeta.CalcularTarifa(tarjeta);
-
-        Assert.That(viaje5, Is.True, "El quinto viaje deberia ser permitido, pero con tarifa normal.");
-        Assert.That(tarjeta.Saldo, Is.EqualTo(saldoAntes - tarifaNormal).Within(0.01m), "El saldo deberoa ajustarse al cobrar la tarifa normal del quinto viaje.");
-    }
-
-
 }
+

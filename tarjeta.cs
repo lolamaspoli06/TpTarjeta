@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace TarjetaNamespace;
+
 public class Tarjeta
 {
     private decimal saldo;
     private readonly decimal limiteSaldo = 9900;
-    private readonly decimal tarifaBasica = 940;
+    protected readonly decimal tarifaBasica = 940;
     private readonly decimal saldoNegativo = 480;
     public int Id { get; private set; }
     public DateTime UltimoUso { get; private set; }
@@ -28,22 +29,21 @@ public class Tarjeta
     {
         if (monto <= limiteSaldo && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000))
         {
-            
-            if (saldo<0)
+            if (saldo < 0)
             {
-                Console.WriteLine($"Saldo negativo ${saldo} acreditado por ${monto} ");
+                Console.WriteLine($"Saldo negativo ${saldo} acreditado por ${monto}");
             }
             decimal nuevoSaldo = saldo + monto;
             saldo = nuevoSaldo;
-            Console.WriteLine($"Saldo actual ${saldo} ");
+            Console.WriteLine($"Saldo actual ${saldo}");
             return true;
-
         }
         else
         {
             return false;
         }
     }
+
     public decimal SaldoNegativo
     {
         get
@@ -55,7 +55,6 @@ public class Tarjeta
             return 0;
         }
     }
-  
 
     public decimal CalcularTarifa(Tarjeta tarjeta)
     {
@@ -65,8 +64,7 @@ public class Tarjeta
         {
             tarifaCalculada = 0;
         }
-        else
-       if (tarjeta is MedioBoleto)
+        else if (tarjeta is MedioBoleto)
         {
             tarifaCalculada /= 2;
         }
@@ -92,9 +90,10 @@ public class Tarjeta
             return true;
         }
         else
+        {
             return false;
+        }
     }
-
 
     public class MedioBoleto : Tarjeta
     {
@@ -102,22 +101,23 @@ public class Tarjeta
 
         public override bool DescontarPasaje(decimal monto)
         {
+            // Usa tarifa básica si es solicitada, o la tarifa con descuento.
+            decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : tarifaBasica / 2;
 
-            if (saldo >= monto)
+            if (saldo >= tarifaAplicada)
             {
-                decimal tarifaConDescuento = tarifaBasica / 2;
-                saldo -= tarifaConDescuento;
+                saldo -= tarifaAplicada;
                 return true;
             }
-            else if (saldo + saldoNegativo >= monto)
+            else if (saldo + saldoNegativo >= tarifaAplicada)
             {
-                decimal tarifaConDescuento = tarifaBasica / 2;
-                saldo -= tarifaConDescuento;
+                saldo -= tarifaAplicada;
                 return true;
             }
             else
+            {
                 return false;
-
+            }
         }
     }
 
@@ -127,16 +127,23 @@ public class Tarjeta
 
         public override bool DescontarPasaje(decimal monto)
         {
-            if (saldo >= monto)
+            // Usa tarifa básica si es solicitada, o viaje gratuito (tarifa = 0).
+            decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : 0;
+
+            if (saldo >= tarifaAplicada)
             {
+                saldo -= tarifaAplicada;
                 return true;
             }
-
+            else if (saldo + saldoNegativo >= tarifaAplicada)
+            {
+                saldo -= tarifaAplicada;
+                return true;
+            }
             else
             {
                 return false;
             }
-
         }
     }
 }

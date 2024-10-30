@@ -3,39 +3,45 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace TarjetaNamespace;
-    public class Tarjeta
-    {
-        private decimal saldo;
-        private readonly decimal limiteSaldo = 9900;
-        private readonly decimal tarifaBasica = 940;
-        private readonly decimal saldoNegativo = 480;
-        public int Id { get; private set; }
-        public DateTime UltimoUso { get; private set; }
-        public int ViajesHoy { get; set; }
-
+public class Tarjeta
+{
+    private decimal saldo;
+    private readonly decimal limiteSaldo = 9900;
+    private readonly decimal tarifaBasica = 940;
+    private readonly decimal saldoNegativo = 480;
+    public int Id { get; private set; }
+    public DateTime UltimoUso { get; private set; }
+    public int ViajesHoy { get; set; }
     public Tarjeta(decimal saldoInicial)
-        {
-            saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
-            ViajesHoy = 0;
+    {
+        saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
+        ViajesHoy = 1;
     }
 
-        public decimal Saldo
-        {
-            get { return saldo; }
-        }
+    public decimal Saldo
+    {
+        get { return saldo; }
+    }
 
     public bool CargarSaldo(decimal monto)
     {
-        if (monto <= limiteSaldo && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000)) { 
+        if (monto <= limiteSaldo && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000))
+        {
+            if (saldo < 0)
+            {
+                Console.WriteLine($"Saldo negativo ${saldo} acreditado por ${monto}");
+            }
             decimal nuevoSaldo = saldo + monto;
             saldo = nuevoSaldo;
+            Console.WriteLine($"Saldo actual ${saldo}");
             return true;
-
-        } else
+        }
+        else
         {
             return false;
         }
-        }
+    }
+
     public decimal SaldoNegativo
     {
         get
@@ -52,12 +58,11 @@ namespace TarjetaNamespace;
     {
         decimal tarifaCalculada = tarifaBasica;
 
-         if (tarjeta is BoletoGratuito)
-         {
-             tarifaCalculada = 0;
-         }
-         else
-        if (tarjeta is MedioBoleto)
+        if (tarjeta is BoletoGratuito)
+        {
+            tarifaCalculada = 0;
+        }
+        else if (tarjeta is MedioBoleto)
         {
             tarifaCalculada /= 2;
         }
@@ -80,16 +85,13 @@ namespace TarjetaNamespace;
         else if (saldo + saldoNegativo >= monto)
         {
             saldo -= monto;
-            Console.WriteLine($"Se ha descontado {monto}. Saldo actual: {saldo}, incluyendo saldo negativo.");
             return true;
         }
         else
         {
-            Console.WriteLine("Saldo insuficiente para descontar el monto.");
             return false;
         }
     }
-
 
     public class MedioBoleto : Tarjeta
     {
@@ -97,9 +99,23 @@ namespace TarjetaNamespace;
 
         public override bool DescontarPasaje(decimal monto)
         {
-            decimal tarifaConDescuento = tarifaBasica / 2;
-                saldo -= tarifaConDescuento;
+            // Usa tarifa básica si es solicitada, o la tarifa con descuento.
+            decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : tarifaBasica / 2;
+
+            if (saldo >= tarifaAplicada)
+            {
+                saldo -= tarifaAplicada;
                 return true;
+            }
+            else if (saldo + saldoNegativo >= tarifaAplicada)
+            {
+                saldo -= tarifaAplicada;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
@@ -109,7 +125,23 @@ namespace TarjetaNamespace;
 
         public override bool DescontarPasaje(decimal monto)
         {
-            return true;
+            // Usa tarifa básica si es solicitada, o viaje gratuito (tarifa = 0).
+            decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : 0;
+
+            if (saldo >= tarifaAplicada)
+            {
+                saldo -= tarifaAplicada;
+                return true;
+            }
+            else if (saldo + saldoNegativo >= tarifaAplicada)
+            {
+                saldo -= tarifaAplicada;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

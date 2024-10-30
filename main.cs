@@ -1,18 +1,16 @@
 ﻿using System;
 using BoletoNamespace;
+using ManejoDeTiempos;
 using ColectivoNamespace;
 using TarjetaNamespace;
 using static TarjetaNamespace.Tarjeta;
 
-
-
 class Program
 {
-  
-
     public static void Main()
     {
-        Colectivo colectivo = new Colectivo("linea 120");
+        Tiempo tiempo = new Tiempo();
+        Colectivo colectivo = new Colectivo("linea 120", tiempo);  // Ahora pasa el tiempo como argumento
         Tarjeta tarjeta = new Tarjeta(0);
         bool salir = false;
 
@@ -37,15 +35,14 @@ class Program
                     break;
 
                 default:
-                    Console.WriteLine("Opcion no valida");
+                    Console.WriteLine("Opción no válida");
                     break;
             }
             break;
-
         }
+
         while (!salir)
         {
-
             Console.WriteLine("Elija una opción:");
             Console.WriteLine("1. Consultar saldo de tarjeta");
             Console.WriteLine("2. Cargar saldo en tarjeta");
@@ -72,7 +69,6 @@ class Program
                     break;
 
                 case "3":
-
                     Boleto boleto = colectivo.PagarCon(tarjeta);
                     if (boleto != null)
                     {
@@ -88,7 +84,6 @@ class Program
                         {
                             Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
                         }
-
                     }
                     else
                     {

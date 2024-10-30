@@ -1,49 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using BoletoNamespace;
-using TarjetaNamespace;
+﻿using BoletoNamespace;
+using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
-namespace ColectivoNamespace;
+using TarjetaNamespace;
 
-public class Colectivo
+namespace ColectivoNamespace
 {
-    public string Linea { get; private set; }
-    private readonly decimal tarifaBasica = 940;
-    public Colectivo(string linea)
+    public class Colectivo
     {
-        this.Linea = linea;
-    }
+        public string Linea { get; private set; }
+        private readonly decimal tarifaBasica = 940;
+        private Tiempo tiempo; // Nuevo campo
 
-    public Boleto PagarCon(Tarjeta tarjeta)
-    {
-        decimal totalAbonado = tarjeta.CalcularTarifa(tarjeta);
-        string descripcionExtra = "";
-
-        if (tarjeta.SaldoNegativo > 0)
+        public decimal TarifaBasica => tarifaBasica;
+        // Constructor actualizado
+        public Colectivo(string linea, Tiempo tiempo)
         {
-            descripcionExtra = $"Abona saldo {tarjeta.SaldoNegativo}";
+            this.Linea = linea;
+            this.tiempo = tiempo;
         }
 
-        if (tarjeta is MedioBoleto || tarjeta is BoletoGratuito)
+        public Boleto PagarCon(Tarjeta tarjeta)
         {
-            if (tarjeta.ViajesHoy >= 4)
-            {
+            decimal totalAbonado = tarjeta.CalcularTarifa(tarjeta);
+            string descripcionExtra = "";
 
-                totalAbonado = tarifaBasica; 
+            if (tarjeta.SaldoNegativo > 0)
+            {
+                descripcionExtra = $"Abona saldo {tarjeta.SaldoNegativo}";
             }
 
-            if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
+            if (tarjeta is MedioBoleto)
             {
-                Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos.");
-                return null; 
+                // Usamos tiempo.Now() en lugar de DateTime.Now
+                if (tarjeta.ViajesHoy >= 4)
+                {
+                    Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
+                    totalAbonado = tarifaBasica;
+                }
+
+                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
+                {
+                    Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica");
+                    totalAbonado = tarifaBasica;
+                }
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))
             {
                 tarjeta.ActualizarUltimoUso();
-                tarjeta.ViajesHoy++; 
+                tarjeta.ViajesHoy++;
                 return new Boleto(
-                    DateTime.Now,
+                    tiempo.Now(),
                     tarjeta.GetType().Name,
                     this.Linea,
                     totalAbonado,
@@ -52,9 +59,9 @@ public class Colectivo
                     descripcionExtra
                 );
             }
-        }
 
-        return null; 
+            return null;
+        }
     }
 
 }

@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace TarjetaNamespace;
-
 public class Tarjeta
 {
     private decimal saldo;
     private readonly decimal limiteSaldo = 9900;
-    protected readonly decimal tarifaBasica = 940;
+    private readonly decimal tarifaBasica = 940;
     private readonly decimal saldoNegativo = 480;
     public int Id { get; private set; }
     public DateTime UltimoUso { get; private set; }
     public int ViajesHoy { get; set; }
 
+    
     public Tarjeta(decimal saldoInicial)
     {
         saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
         ViajesHoy = 1;
+      
     }
 
     public decimal Saldo

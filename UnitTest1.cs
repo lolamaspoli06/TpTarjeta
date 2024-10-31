@@ -3,6 +3,7 @@ using NUnit.Framework;
 using TarjetaNamespace;
 using ColectivoNamespace;
 using BoletoNamespace;
+using ManejoDeTiempos;
 
 namespace Tests
 {
@@ -10,42 +11,50 @@ namespace Tests
     public class BoletoGratuitoTests
     {
         private const decimal TarifaCompleta = 940m;
+        private TiempoFalso tiempoFalso;
+        private Colectivo colectivo;
+        private Tarjeta.BoletoGratuito tarjetaGratuita;
+
+        [SetUp]
+        public void SetUp()
+        {
+            tiempoFalso = new TiempoFalso(); // Usamos TiempoFalso para simular el tiempo
+            colectivo = new Colectivo("linea 120", tiempoFalso);
+            tarjetaGratuita = new Tarjeta.BoletoGratuito(TarifaCompleta); // Inicializamos la tarjeta con saldo suficiente
+        }
 
         [Test]
         public void NoPermitirMasDeDosViajesGratuitosPorDia()
         {
-            // Arrange
-            Colectivo colectivo = new Colectivo("linea 120");
-            Tarjeta.BoletoGratuito tarjetaGratuita = new Tarjeta.BoletoGratuito(0);
-
             // Act
             Boleto primerViaje = colectivo.PagarCon(tarjetaGratuita);
             Boleto segundoViaje = colectivo.PagarCon(tarjetaGratuita);
             Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita);
 
             // Assert
-            Assert.IsNotNull(primerViaje, "El primer viaje gratuito debería estar permitido.");
-            Assert.IsNotNull(segundoViaje, "El segundo viaje gratuito debería estar permitido.");
-            Assert.IsNull(tercerViaje, "El tercer viaje gratuito no debería estar permitido en el mismo día.");
-        }
+            Assert.That(primerViaje, Is.Not.Null, "El primer viaje gratuito debería estar permitido.");
+            Assert.That(segundoViaje, Is.Not.Null, "El segundo viaje gratuito debería estar permitido.");
+            Assert.That(tercerViaje, Is.Not.Null, "El tercer viaje debería estar permitido, pero a tarifa completa.");
+            Assert.That(tercerViaje.TotalAbonado, Is.EqualTo(TarifaCompleta), "El tercer viaje en un mismo día no debería ser gratuito; debería cobrarse la tarifa completa.");
+        
+    }
 
         [Test]
         public void CobrarPrecioCompletoAPartirDelTercerViajeGratuito()
         {
-            // Arrange
-            Colectivo colectivo = new Colectivo("linea 120");
-            Tarjeta.BoletoGratuito tarjetaGratuita = new Tarjeta.BoletoGratuito(TarifaCompleta); // Inicializar con saldo suficiente
-
             // Act
-            colectivo.PagarCon(tarjetaGratuita); // Primer viaje gratuito
-            colectivo.PagarCon(tarjetaGratuita); // Segundo viaje gratuito
-            Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita); // Tercer viaje, debería cobrar tarifa completa
+            Boleto primerViaje = colectivo.PagarCon(tarjetaGratuita);
+            tiempoFalso.AgregarMinutos(1); //para que pase un tiempo entre viaje y viaje
+            Boleto segundoViaje = colectivo.PagarCon(tarjetaGratuita); 
+            tiempoFalso.AgregarMinutos(1); 
+            Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita);
 
             // Assert
-            Assert.IsNotNull(tercerViaje, "El tercer viaje debería permitirse.");
-            Assert.AreEqual(TarifaCompleta, tercerViaje.TotalAbonado, "El tercer viaje debería cobrarse a tarifa completa.");
-            Assert.AreEqual(TarifaCompleta - TarifaCompleta, tarjetaGratuita.Saldo, "El saldo restante debería reflejar la tarifa completa cobrada en el tercer viaje.");
+            Assert.That(primerViaje, Is.Not.Null, "El primer viaje debería estar permitido como gratuito.");
+            Assert.That(segundoViaje, Is.Not.Null, "El segundo viaje debería estar permitido como gratuito.");
+            Assert.That(tercerViaje, Is.Not.Null, "El tercer viaje debería permitirse, pero con tarifa completa.");
+            Assert.That(tercerViaje.TotalAbonado, Is.EqualTo(TarifaCompleta), "El tercer viaje debería cobrarse a tarifa completa.");
+            Assert.That(tarjetaGratuita.Saldo, Is.EqualTo(0), "El saldo restante debería reflejar la tarifa completa cobrada en el tercer viaje.");
         }
     }
 }
-

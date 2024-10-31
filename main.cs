@@ -1,18 +1,16 @@
 ﻿using System;
 using BoletoNamespace;
+using ManejoDeTiempos;
 using ColectivoNamespace;
 using TarjetaNamespace;
 using static TarjetaNamespace.Tarjeta;
 
-
-
 class Program
 {
-
-
     public static void Main()
     {
-        Colectivo colectivo = new Colectivo("linea 120");
+        Tiempo tiempo = new Tiempo();
+        Colectivo colectivo = new Colectivo("linea 120", tiempo);  // Ahora pasa el tiempo como argumento
         Tarjeta tarjeta = new Tarjeta(0);
         bool salir = false;
 
@@ -37,15 +35,14 @@ class Program
                     break;
 
                 default:
-                    Console.WriteLine("Opcion no valida");
+                    Console.WriteLine("Opción no válida");
                     break;
             }
             break;
-
         }
+
         while (!salir)
         {
-
             Console.WriteLine("Elija una opción:");
             Console.WriteLine("1. Consultar saldo de tarjeta");
             Console.WriteLine("2. Cargar saldo en tarjeta");
@@ -72,19 +69,28 @@ class Program
                     break;
 
                 case "3":
-
                     Boleto boleto = colectivo.PagarCon(tarjeta);
                     if (boleto != null)
                     {
-                        boleto.MostrarInformacion();
-                        Console.WriteLine($"Viaje pagado. Se ha descontado {boleto.TotalAbonado}. Saldo actual: {boleto.SaldoRestante}.");
+                        if (tarjeta is BoletoGratuito)
+                        {
+                            Console.WriteLine($"Viaje pagado con boleto gratuito. Saldo restante: ${boleto.SaldoRestante}");
+                        }
+                        if (tarjeta is MedioBoleto)
+                        {
+                            Console.WriteLine($"Viaje pagado con medio boleto. Saldo restante: ${boleto.SaldoRestante}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("Viaje no pagado. Saldo insuficiente para descontar el monto.");
+                        Console.WriteLine("No se pudo realizar el boleto. Verifique el saldo de la tarjeta.");
                     }
                     break;
-                    
+
                 case "4":
                     salir = true;
                     Console.WriteLine("Saliendo del programa...");

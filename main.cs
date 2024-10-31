@@ -1,86 +1,80 @@
-using System;
+﻿using System;
+using BoletoNamespace;
+using ColectivoNamespace;
+using TarjetaNamespace;
 
-namespace Tp2AAT
+class Program
 {
-    class Program
+
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args) // Asegúrate de tener el parámetro args
+        Boleto boleto = new Boleto();
+        Colectivo colectivo = new Colectivo();
+        Tarjeta tarjeta = null;
+
+        while (true)
         {
-            Colectivo colectivo = new Colectivo("Línea 120"); 
+            Console.WriteLine("Tipo de tarjeta a usar: ");
+            Console.WriteLine("1 Normal");
+            Console.WriteLine("2 Medio Boleto");
+            Console.WriteLine("3 Franquicia Completa");
+            string tipo_tarjeta = Console.ReadLine();
 
-            Tarjeta tarjeta = new Tarjeta(0, null); 
-            bool salir = false;
-            tarjeta = inicio(tarjeta);
-
-            while (!salir)
+            switch (tipo_tarjeta)
             {
-                Console.WriteLine("Elija una opción:");
-                Console.WriteLine("1. Consultar saldo de tarjeta");
-                Console.WriteLine("2. Cargar saldo en tarjeta");
-                Console.WriteLine("3. Pagar boleto de colectivo");
-                Console.WriteLine("4. Salir");
+                case "1":
+                    tarjeta = new Tarjeta();
+                    break;
+                case "2":
+                    tarjeta = new MedioBoleto();
+                    break;
+                case "3":
+                    tarjeta = new FranquiciaCompleta();
+                    break;
 
-                string opcion = Console.ReadLine();
+                default:
+                    Console.WriteLine("Opcion no valida");
+                    break;
+            }
+            break;
 
+        }
+
+
+        while (true)
+        {
+            Console.WriteLine("Ingrese una opcion");
+            Console.WriteLine("1: Cargar saldo");
+            Console.WriteLine("2: Pagar boleto");
+            Console.WriteLine("saldo actual: " + tarjeta.saldo);
+
+            string opcion = Console.ReadLine();
+            {
                 switch (opcion)
                 {
                     case "1":
-                        Console.WriteLine($"Saldo actual de la tarjeta: ${tarjeta.Saldo}");
+                        Console.WriteLine("Ingrese el monto a cargar");
+                        int monto = int.Parse(Console.ReadLine());
+                        tarjeta.cargarSaldo(monto);
                         break;
-
                     case "2":
-                        Console.WriteLine("Ingrese el monto a cargar: $2000, $3000, $4000, $5000, $6000, $7000, $8000, $9000");
-                        string input = Console.ReadLine();
-                        if (!string.IsNullOrEmpty(input) && decimal.TryParse(input, out decimal monto))
+                        if (tarjeta.TarjetaUsos(tarjeta))
                         {
-                             List<decimal> montosValidos = new List<decimal> { 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000 };
-                             if (montosValidos.Contains(monto)){
-                            tarjeta.CargarSaldo(monto);
-                            Console.WriteLine("Carga realizada con éxito.");
-                             } else {
-                                Console.WriteLine ("Monto inválido");
-                             }
+                            colectivo.PagarCon(tarjeta);
+                            boleto.FechaDatos();
+                            boleto.TipoTarjeta(tarjeta);
+                            boleto.MostrarLinea(colectivo);
                         }
                         else
                         {
-                            Console.WriteLine("Monto inválido o límite de saldo alcanzado.");
+                            Console.WriteLine("Limitacion en El medio boleto");
                         }
                         break;
-
-                    case "3":
-                        Boleto boleto = colectivo.PagarCon(tarjeta);
-                        if (boleto != null)
-                        {
-                            boleto.MostrarInformacion();
-                        }
-                        else
-                        {
-                            Console.WriteLine("No se pudo realizar el pago. Verifique el saldo de la tarjeta.");
-                        }
-                        break;
-
-                    case "4":
-                        salir = true;
-                        Console.WriteLine("Saliendo del programa...");
-                        break;
-
                     default:
-                        Console.WriteLine("Opción inválida. Por favor, intente nuevamente.");
+                        Console.WriteLine("Opcion no valida");
                         break;
                 }
             }
-        }
-
-        // Debes mantener el método inicio aquí también
-        static Tarjeta inicio(Tarjeta tarjeta)
-        {
-            Console.WriteLine("¿Tiene franquicia de medio boleto? (s/n)");
-            string tieneFranquicia = Console.ReadLine();
-            if (tieneFranquicia.ToLower() == "s")
-            {
-                tarjeta = new MedioBoleto(tarjeta.Saldo);
-            }
-            return tarjeta;
         }
     }
 }

@@ -12,10 +12,13 @@ public class Tarjeta
     public int Id { get; private set; }
     public DateTime UltimoUso { get; private set; }
     public int ViajesHoy { get; set; }
+
+    
     public Tarjeta(decimal saldoInicial)
     {
         saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
         ViajesHoy = 1;
+      
     }
 
     public decimal Saldo

@@ -38,11 +38,18 @@ namespace ColectivoNamespace
                     totalAbonado = tarifaBasica;
                 }
 
-                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
+                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 1)
                 {
                     Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica");
                     totalAbonado = tarifaBasica;
+                    tarjeta.ViajesHoy-=1;
                 }
+            }
+            // Restricción en boleto gratuito.
+            if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
+            {
+                totalAbonado = tarifaBasica;
+                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))

@@ -38,7 +38,7 @@ namespace ColectivoNamespace
                     totalAbonado = tarifaBasica;
                 }
 
-                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 1)
+                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
                 {
                     Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica");
                     totalAbonado = tarifaBasica;

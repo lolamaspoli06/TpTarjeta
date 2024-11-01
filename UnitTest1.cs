@@ -46,7 +46,7 @@ namespace Tests
             Assert.IsNull(boleto, "No se debería permitir un viaje con Boleto Gratuito fuera del horario permitido.");
         }
 
-        //los primeros dos casos son para mostrar los casos que se deberian permitir las franquicias
+        //los ultimos dos casos son para mostrar los casos que se deberian permitir las franquicias
         [Test]
         public void PermiteViajeConMedioBoletoEnHorarioPermitido()
         {

@@ -5,18 +5,35 @@ namespace BoletoNamespace;
 
 public class Boleto
 {
-    public string Linea { get; private set; }
+    // Propiedades
+    public DateTime Fecha { get; private set; }
+    public string TipoTarjeta { get; private set; }
+    public string LineaColectivo { get; private set; }
+    public decimal TotalAbonado { get; private set; }
     public decimal SaldoRestante { get; private set; }
-    public DateTime FechaHora { get; private set; }
+    public string IdTarjeta { get; private set; }
+    public string DescripcionExtra { get; private set; }
 
-    public Boleto(decimal saldoRestante)
+    // Constructor
+    public Boleto(DateTime fecha, string tipoTarjeta, string lineaColectivo, decimal totalAbonado, decimal saldoRestante, string idTarjeta, string descripcionExtra)
     {
-        this.SaldoRestante = saldoRestante;
-        this.FechaHora = DateTime.Now;
+        Fecha = fecha;
+        TipoTarjeta = tipoTarjeta;
+        LineaColectivo = lineaColectivo;
+        TotalAbonado = totalAbonado;
+        SaldoRestante = saldoRestante;
+        IdTarjeta = idTarjeta;
+        DescripcionExtra = descripcionExtra;
     }
 
-    public override string ToString()
+    // Método para mostrar la información del boleto
+    public void MostrarInformacion()
     {
-        return $"Boleto - Saldo Restante: {SaldoRestante:C}, Fecha y Hora: {FechaHora}";
+        Console.WriteLine($"Fecha: {Fecha}");
+        Console.WriteLine($"Tipo de Tarjeta: {TipoTarjeta}");
+        Console.WriteLine($"Línea de Colectivo: {LineaColectivo}");
+        Console.WriteLine($"Total Abonado: {TotalAbonado}");
+        Console.WriteLine($"Saldo Restante: {SaldoRestante}");
+        Console.WriteLine($"ID de Tarjeta: {IdTarjeta}");
     }
 }

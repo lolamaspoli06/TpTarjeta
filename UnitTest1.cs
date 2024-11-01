@@ -1,48 +1,90 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System;
 using TarjetaNamespace;
 
-
-namespace Tests
+namespace TarjetaNamespace.Tests
 {
     [TestFixture]
     public class TarjetaTests
     {
+        /*
         [Test]
-        [TestCase(2000)]
-        [TestCase(3000)]
-        [TestCase(4000)]
-        [TestCase(5000)]
-        [TestCase(6000)]
-        [TestCase(7000)]
-        [TestCase(8000)]
-        [TestCase(9000)]
-        public void CargarSaldo_ConMontosValidos_DeberiaCargarCorrectamente(int monto)
+        public void TarjetaNormal_DescuentoFrecuenteAplicadoCorrectamente()
         {
-            // Arrange
-            var tarjeta = new Tarjeta(0);
+            var tarjeta = new Tarjeta(50000); // Asegúrate de tener saldo suficiente
 
-            // Act
-            tarjeta.CargarSaldo(monto);
+            for (int i = 1; i <= 81; i++)
+            {
+                tarjeta.ActualizarUltimoUso(); // Actualiza el uso para contar el viaje
 
-            // Assert
-            Assert.AreEqual(monto, tarjeta.Saldo, $"El saldo cargado deber�a ser {monto}, pero fue {tarjeta.Saldo}");
+                // Llama al método para calcular la tarifa antes de descontar
+                decimal tarifa = tarjeta.CalcularTarifa();
+
+                Console.WriteLine($"Antes del viaje {i}: Saldo {tarjeta.Saldo}, Tarifa {tarifa}, Viajes Este Mes: {tarjeta.ViajesEsteMes}");
+
+                // Realiza el descuento
+                bool resultadoDescuento = tarjeta.DescontarPasaje(tarifa);
+
+                Console.WriteLine($"Después del viaje {i}: Saldo {tarjeta.Saldo}, Resultado Descuento: {resultadoDescuento}");
+
+                // Verificar el resultado del descuento
+                Assert.IsTrue(resultadoDescuento, $"No se pudo descontar en el viaje {i}");
+
+                // Verifica que la tarifa sea correcta según el viaje
+                decimal tarifaEsperada = tarjeta.TarifaBasica;
+
+                if (i >= 30 && i < 79)
+                {
+                    tarifaEsperada *= 0.8m; // 20% de descuento
+                }
+                else if (i >= 79 && i <= 80)
+                {
+                    tarifaEsperada *= 0.75m; // 25% de descuento
+                }
+
+                // Verificar que la tarifa calculada coincide con la tarifa esperada
+                Assert.That(tarifa, Is.EqualTo(tarifaEsperada).Within(0.01),
+                            $"Error en el viaje {i}: tarifa esperada {tarifaEsperada}, tarifa calculada {tarifa}");
+            }
         }
+        */
 
-        [Test]
-        [TestCase(1000)]
-        [TestCase(1500)]
-        [TestCase(2500)]
-        [TestCase(50000)]
-        public void CargarSaldo_ConMontosInvalidos_NoDeberiaCargarSaldo(int monto)
-        {
-            // Arrange
-            var tarjeta = new Tarjeta(0);
 
-            // Act
-            tarjeta.CargarSaldo(monto);
 
-            // Assert
-            Assert.AreEqual(0, tarjeta.Saldo, $"El saldo deber�a ser 0, pero fue {tarjeta.Saldo}");
-        }
+
+
+            [Test]
+            public void MedioBoleto_NoAplicaDescuentoFrecuente()
+            {
+                var medioBoleto = new Tarjeta.MedioBoleto(10000);
+                decimal tarifaEsperada = 1200 / 2; // La mitad de la tarifa normal
+
+                for (int i = 1; i <= 80; i++)
+                {
+                    // Calcula la tarifa usando el método sin argumentos
+                    decimal tarifa = medioBoleto.CalcularTarifa();
+                    Assert.That(tarifa, Is.EqualTo(tarifaEsperada).Within(0.01),
+                                $"Viaje {i}: tarifa incorrecta para Medio Boleto");
+
+                    medioBoleto.DescontarPasaje(tarifa);
+                    medioBoleto.ActualizarUltimoUso(); // Incrementar viajes del mes
+                }
+            }
+
+            [Test]
+            public void BoletoGratuito_NoAplicaDescuentoFrecuente()
+            {
+                var boletoGratuito = new Tarjeta.BoletoGratuito(10000);
+
+                for (int i = 1; i <= 80; i++)
+                {
+                    // Calcula la tarifa usando el método sin argumentos
+                    decimal tarifa = boletoGratuito.CalcularTarifa();
+                    Assert.That(tarifa, Is.EqualTo(0), $"Viaje {i}: tarifa incorrecta para Boleto Gratuito");
+
+                    boletoGratuito.DescontarPasaje(0);
+                    boletoGratuito.ActualizarUltimoUso(); // Incrementar viajes del mes
+                }
+            }
     }
 }

@@ -36,17 +36,17 @@ namespace Tests
             Assert.That(segundoViaje, Is.Not.Null, "El segundo viaje gratuito debería estar permitido.");
             Assert.That(tercerViaje, Is.Not.Null, "El tercer viaje debería estar permitido, pero a tarifa completa.");
             Assert.That(tercerViaje.TotalAbonado, Is.EqualTo(TarifaCompleta), "El tercer viaje en un mismo día no debería ser gratuito; debería cobrarse la tarifa completa.");
-        
-    }
+
+        }
 
         [Test]
         public void CobrarPrecioCompletoAPartirDelTercerViajeGratuito()
         {
             // Act
             Boleto primerViaje = colectivo.PagarCon(tarjetaGratuita);
-            tiempoFalso.AgregarMinutos(1); //para que pase un tiempo entre viaje y viaje
-            Boleto segundoViaje = colectivo.PagarCon(tarjetaGratuita); 
-            tiempoFalso.AgregarMinutos(1); 
+            tiempoFalso.AgregarMinutos(5); //para que pase un tiempo entre viaje y viaje
+            Boleto segundoViaje = colectivo.PagarCon(tarjetaGratuita);
+            tiempoFalso.AgregarMinutos(5);
             Boleto tercerViaje = colectivo.PagarCon(tarjetaGratuita);
 
             // Assert

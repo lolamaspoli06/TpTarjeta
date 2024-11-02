@@ -25,7 +25,7 @@ namespace Tests
             tarjeta.CargarSaldo(monto);
 
             // Assert
-            Assert.AreEqual(monto, tarjeta.Saldo, $"El saldo cargado debería ser {monto}, pero fue {tarjeta.Saldo}");
+            Assert.AreEqual(monto, tarjeta.Saldo, $"El saldo cargado deberÃ­a ser {monto}, pero fue {tarjeta.Saldo}");
         }
 
         [Test]
@@ -42,7 +42,7 @@ namespace Tests
             tarjeta.CargarSaldo(monto);
 
             // Assert
-            Assert.AreEqual(0, tarjeta.Saldo, $"El saldo debería ser 0, pero fue {tarjeta.Saldo}");
+            Assert.AreEqual(0, tarjeta.Saldo, $"El saldo deberÃ­a ser 0, pero fue {tarjeta.Saldo}");
         }
     }
 }

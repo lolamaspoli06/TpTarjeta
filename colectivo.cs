@@ -13,7 +13,7 @@ namespace ColectivoNamespace
 
         public decimal TarifaBasica => tarifaBasica;
 
-        // Constructor actualizado
+
         public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;

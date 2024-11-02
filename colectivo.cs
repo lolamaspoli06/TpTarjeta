@@ -3,6 +3,7 @@ using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
 using TarjetaNamespace;
 
+
 namespace ColectivoNamespace
 {
     public class Colectivo
@@ -34,7 +35,7 @@ namespace ColectivoNamespace
             // Lógica para Medio Boleto
             if (tarjeta is Tarjeta.MedioBoleto medioBoleto)
             {
-                if (tarjeta.ViajesHoy >= 4) 
+                if (tarjeta.ViajesHoy >= 4)
                 {
                     Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
                     totalAbonado = tarjeta.TarifaBasica; // Cambia a tarifa básica
@@ -50,7 +51,7 @@ namespace ColectivoNamespace
             }
 
             // Lógica para Boleto Gratuito
-            if (tarjeta is Tarjeta.BoletoGratuito && tarjeta.ViajesHoy > 2) 
+            if (tarjeta is Tarjeta.BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
                 totalAbonado = tarjeta.TarifaBasica; // Se cobra tarifa básica
                 Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");

@@ -12,7 +12,8 @@ namespace TarjetaNamespace
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
         public int ViajesHoy { get; set; }
-        public int ViajesEsteMes { get; private set; }
+        public int ViajesEsteMes { get; set; } 
+
 
         public Tarjeta(decimal saldoInicial)
         {
@@ -81,15 +82,13 @@ namespace TarjetaNamespace
         {
             decimal tarifaCalculada = tarifaBasica;
 
-            // Aplicación de descuentos para viajes frecuentes en tarjetas normales
             if (!(this is MedioBoleto) && !(this is BoletoGratuito))
             {
-                if (ViajesEsteMes >= 30 && ViajesEsteMes < 78)
+                if (ViajesEsteMes >= 30 && ViajesEsteMes < 80)
                 {
-                    Console.WriteLine($" ${ViajesEsteMes}");
                     tarifaCalculada *= 0.8m; // 20% de descuento
                 }
-                else if (ViajesEsteMes >= 78 && ViajesEsteMes <= 79)
+                else if (ViajesEsteMes >= 80 && ViajesEsteMes <= 80)
                 {
                     tarifaCalculada *= 0.75m; // 25% de descuento
                 }
@@ -123,7 +122,7 @@ namespace TarjetaNamespace
 
         public virtual bool DescontarPasaje(decimal monto)
         {
-            ActualizarUltimoUso(); 
+            ActualizarUltimoUso();
 
             if (saldo >= monto)
             {
@@ -140,7 +139,7 @@ namespace TarjetaNamespace
                 AcreditarSaldoPendiente();
                 Console.WriteLine($"Descuento exitoso con saldo negativo. Saldo actual: ${saldo}");
 
-                ViajesEsteMes++; 
+                ViajesEsteMes++;
                 return true;
             }
             else
@@ -227,5 +226,4 @@ namespace TarjetaNamespace
         }
     }
 }
-    
 

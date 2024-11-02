@@ -13,7 +13,7 @@ namespace ColectivoNamespace
 
         public decimal TarifaBasica => tarifaBasica;
 
-        // Constructor actualizado
+
         public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;
@@ -22,8 +22,7 @@ namespace ColectivoNamespace
 
         public Boleto PagarCon(Tarjeta tarjeta)
         {
-            // Calcular la tarifa a pagar
-            decimal totalAbonado = tarjeta.CalcularTarifa(); // No pasa tarjeta como argumento
+            decimal totalAbonado = tarjeta.CalcularTarifa();
             string descripcionExtra = "";
 
             // Comprobar saldo negativo
@@ -77,10 +76,5 @@ namespace ColectivoNamespace
             // Retornar null si no se pudo descontar
             return null;
         }
-
-
-
-
-
     }
 }

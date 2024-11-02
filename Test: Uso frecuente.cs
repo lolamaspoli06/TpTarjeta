@@ -69,7 +69,7 @@ namespace TarjetaNamespace.Tests
 
             for (int i = 1; i <= 80; i++)
             {
-                // Calcula la tarifa usando el método sin argumentos
+                // Calcula la tarifa usando el mÃ©todo sin argumentos
                 decimal tarifa = medioBoleto.CalcularTarifa();
                 Assert.That(tarifa, Is.EqualTo(tarifaEsperada).Within(0.01),
                             $"Viaje {i}: tarifa incorrecta para Medio Boleto");
@@ -86,7 +86,7 @@ namespace TarjetaNamespace.Tests
 
             for (int i = 1; i <= 80; i++)
             {
-                // Calcula la tarifa usando el método sin argumentos
+                // Calcula la tarifa usando el mÃ©todo sin argumentos
                 decimal tarifa = boletoGratuito.CalcularTarifa();
                 Assert.That(tarifa, Is.EqualTo(0), $"Viaje {i}: tarifa incorrecta para Boleto Gratuito");
 

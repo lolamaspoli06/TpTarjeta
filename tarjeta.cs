@@ -12,7 +12,7 @@ namespace TarjetaNamespace
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
         public int ViajesHoy { get; set; }
-        public int ViajesEsteMes { get; private set; } // Añadido para contar los viajes del mes
+        public int ViajesEsteMes { get; private set; }
 
         public Tarjeta(decimal saldoInicial)
         {
@@ -123,8 +123,7 @@ namespace TarjetaNamespace
 
         public virtual bool DescontarPasaje(decimal monto)
         {
-            // Actualizar el último uso antes de descontar
-            ActualizarUltimoUso(); // Asegúrate de que esto se llame para actualizar ViajesEsteMes
+            ActualizarUltimoUso(); 
 
             if (saldo >= monto)
             {
@@ -132,8 +131,7 @@ namespace TarjetaNamespace
                 AcreditarSaldoPendiente();
                 Console.WriteLine($"Descuento exitoso. Saldo actual: ${saldo}");
 
-                // Incrementa el contador de viajes después de un descuento exitoso
-                ViajesEsteMes++; // Solo incrementa aquí
+                ViajesEsteMes++;
                 return true;
             }
             else if (saldo + saldoNegativo >= monto)
@@ -142,8 +140,7 @@ namespace TarjetaNamespace
                 AcreditarSaldoPendiente();
                 Console.WriteLine($"Descuento exitoso con saldo negativo. Saldo actual: ${saldo}");
 
-                // Incrementa el contador de viajes después de un descuento exitoso
-                ViajesEsteMes++; // Solo incrementa aquí
+                ViajesEsteMes++; 
                 return true;
             }
             else

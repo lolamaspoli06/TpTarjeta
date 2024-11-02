@@ -1,18 +1,46 @@
 ﻿using System;
 using BoletoNamespace;
+using ManejoDeTiempos;
 using ColectivoNamespace;
 using TarjetaNamespace;
-
-
+using static TarjetaNamespace.Tarjeta;
 
 class Program
 {
     public static void Main()
     {
-        Colectivo colectivo = new Colectivo();
-        Tarjeta tarjeta = new Tarjeta(5000);
-
+        Tiempo tiempo = new Tiempo();
+        Colectivo colectivo = new Colectivo("linea 120", tiempo);  // Ahora pasa el tiempo como argumento
+        Tarjeta tarjeta = new Tarjeta(0);
         bool salir = false;
+
+        while (true)
+        {
+            Console.WriteLine("Tipo de tarjeta a usar: ");
+            Console.WriteLine("1 Normal");
+            Console.WriteLine("2 Medio Boleto");
+            Console.WriteLine("3 Boleto Gratuito");
+            string tipo_tarjeta = Console.ReadLine();
+
+            switch (tipo_tarjeta)
+            {
+                case "1":
+                    tarjeta = new Tarjeta(0);
+                    break;
+                case "2":
+                    tarjeta = new MedioBoleto(0);
+                    break;
+                case "3":
+                    tarjeta = new BoletoGratuito(0);
+                    break;
+
+                default:
+                    Console.WriteLine("Opción no válida");
+                    break;
+            }
+            break;
+        }
+
         while (!salir)
         {
             Console.WriteLine("Elija una opción:");
@@ -22,7 +50,6 @@ class Program
             Console.WriteLine("4. Salir");
 
             string opcion = Console.ReadLine();
-
             switch (opcion)
             {
                 case "1":
@@ -45,7 +72,18 @@ class Program
                     Boleto boleto = colectivo.PagarCon(tarjeta);
                     if (boleto != null)
                     {
-                        Console.WriteLine($"Viaje pago. Saldo restante: ${boleto.SaldoRestante}"); ;
+                        if (tarjeta is BoletoGratuito)
+                        {
+                            Console.WriteLine($"Viaje pagado con boleto gratuito. Saldo restante: ${boleto.SaldoRestante}");
+                        }
+                        if (tarjeta is MedioBoleto)
+                        {
+                            Console.WriteLine($"Viaje pagado con medio boleto. Saldo restante: ${boleto.SaldoRestante}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
+                        }
                     }
                     else
                     {

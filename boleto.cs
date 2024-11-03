@@ -15,8 +15,3 @@ public class Boleto
         this.FechaHora = DateTime.Now;
     }
 
-    public override string ToString()
-    {
-        return $"Boleto - Saldo Restante: {SaldoRestante:C}, Fecha y Hora: {FechaHora}";
-    }
-}

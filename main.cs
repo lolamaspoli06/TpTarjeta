@@ -69,7 +69,7 @@ class Program
                     break;
 
                 case "3":
-                    Boleto boleto = colectivo.PagarCon(tarjeta);
+                    Boleto boleto = colectivo.PagarCon(tarjeta,colectivo);
                     if (boleto != null)
                     {
                         if (tarjeta is BoletoGratuito)

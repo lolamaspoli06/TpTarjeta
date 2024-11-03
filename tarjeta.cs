@@ -1,6 +1,7 @@
 ﻿using ColectivoNamespace;
 using System;
 
+
 namespace TarjetaNamespace
 {
     public class Tarjeta
@@ -12,10 +13,12 @@ namespace TarjetaNamespace
         protected decimal tarifaInterurbana = 2500;
         private readonly decimal saldoNegativo = 480;
 
+
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
         public int ViajesHoy { get; set; }
-        public int ViajesEsteMes { get; private set; }
+        public int ViajesEsteMes { get; set; } 
+
 
         public Tarjeta(decimal saldoInicial)
         {
@@ -23,10 +26,17 @@ namespace TarjetaNamespace
             ViajesHoy = 1;
         }
 
-        public decimal SaldoPendiente => saldoPendiente;
-        public decimal Saldo => saldo;
+        public decimal SaldoPendiente
+        {
+            get { return saldoPendiente; }
+        }
+        public decimal TarifaBasica => tarifaBasica; // Agrega esto en tu clase Tarjeta
 
-        public decimal SaldoNegativo => saldo < 0 ? saldo : 0; // Propiedad corregida
+
+        public decimal Saldo
+        {
+            get { return saldo; }
+        }
 
         public void ProcesarSaldoPendiente()
         {
@@ -61,43 +71,58 @@ namespace TarjetaNamespace
             }
         }
 
+        public decimal SaldoNegativo
+        {
+            get
+            {
+                if (saldo < 0)
+                {
+                    return saldo;
+                }
+                return 0;
+            }
+        }
+
         public decimal CalcularTarifa(Colectivo colectivo)
         {
-            decimal tarifaAplicada = colectivo.EsInterurbano ? tarifaInterurbana : tarifaBasica;
+            decimal tarifaCalculada = colectivo.EsInterurbano ? tarifaInterurbana : tarifaBasica;
 
-            // Aplicación de descuentos para viajes frecuentes en tarjetas normales
             if (!(this is MedioBoleto) && !(this is BoletoGratuito))
             {
-                if (ViajesEsteMes >= 30 && ViajesEsteMes < 78)
+                if (ViajesEsteMes >= 30 && ViajesEsteMes < 80)
                 {
-                    tarifaAplicada *= 0.8m; // 20% de descuento
+                    tarifaCalculada *= 0.8m; // 20% de descuento
                 }
-                else if (ViajesEsteMes >= 78 && ViajesEsteMes <= 79)
+                else if (ViajesEsteMes >= 80 && ViajesEsteMes <= 80)
                 {
-                    tarifaAplicada *= 0.75m; // 25% de descuento
+                    tarifaCalculada *= 0.75m; // 25% de descuento
                 }
             }
 
             if (this is BoletoGratuito)
             {
-                tarifaAplicada = 0; // Sin costo para BoletoGratuito
+                tarifaCalculada = 0; // Sin costo para Boleto Gratuito
             }
             else if (this is MedioBoleto)
             {
-                tarifaAplicada /= 2; // 50% de descuento para MedioBoleto
+                tarifaCalculada /= 2; // La mitad de la tarifa normal para Medio Boleto
             }
 
-            return tarifaAplicada;
+            return tarifaCalculada;
         }
+
 
         public void ActualizarUltimoUso()
         {
             UltimoUso = DateTime.Now;
 
+            // Reinicio de viajes mensuales si es el primer día del mes
             if (UltimoUso.Day == 1)
             {
-                ViajesEsteMes = 0; // Reiniciar viajes al comienzo de cada mes
+                ViajesEsteMes = 0; // Reinicia el contador de viajes
             }
+
+            // El incremento de ViajesEsteMes se maneja ahora en DescontarPasaje
         }
 
         public virtual bool DescontarPasaje(decimal monto)
@@ -108,6 +133,8 @@ namespace TarjetaNamespace
             {
                 saldo -= monto;
                 AcreditarSaldoPendiente();
+                Console.WriteLine($"Descuento exitoso. Saldo actual: ${saldo}");
+
                 ViajesEsteMes++;
                 return true;
             }
@@ -115,11 +142,19 @@ namespace TarjetaNamespace
             {
                 saldo -= monto;
                 AcreditarSaldoPendiente();
+                Console.WriteLine($"Descuento exitoso con saldo negativo. Saldo actual: ${saldo}");
+
                 ViajesEsteMes++;
                 return true;
             }
-            return false; // No se pudo descontar el pasaje
+            else
+            {
+                Console.WriteLine("No se puede descontar el pasaje.");
+                return false;
+            }
         }
+
+
 
         private void AcreditarSaldoPendiente()
         {
@@ -130,6 +165,8 @@ namespace TarjetaNamespace
 
                 saldo += montoAcreditar;
                 saldoPendiente -= montoAcreditar;
+
+                Console.WriteLine($"Se acreditaron ${montoAcreditar} del saldo pendiente. Saldo actual: ${saldo}. Saldo pendiente restante: ${saldoPendiente}");
             }
         }
 
@@ -139,20 +176,27 @@ namespace TarjetaNamespace
 
             public override bool DescontarPasaje(decimal monto)
             {
-                decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica / 2 : monto;
+                decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : tarifaBasica / 2;
+
                 if (saldo >= tarifaAplicada)
                 {
                     saldo -= tarifaAplicada;
                     AcreditarSaldoPendiente();
+                    Console.WriteLine($"Descuento exitoso para Medio Boleto. Saldo actual: ${saldo}");
                     return true;
                 }
                 else if (saldo + saldoNegativo >= tarifaAplicada)
                 {
                     saldo -= tarifaAplicada;
                     AcreditarSaldoPendiente();
+                    Console.WriteLine($"Descuento exitoso con saldo negativo para Medio Boleto. Saldo actual: ${saldo}");
                     return true;
                 }
-                return false; // No se pudo descontar el pasaje
+                else
+                {
+                    Console.WriteLine("No se puede descontar el pasaje para Medio Boleto.");
+                    return false;
+                }
             }
         }
 
@@ -162,10 +206,29 @@ namespace TarjetaNamespace
 
             public override bool DescontarPasaje(decimal monto)
             {
-                // El BoletoGratuito no debería afectar el saldo, simplemente permite el viaje
-                AcreditarSaldoPendiente();
-                return true; // Permite el viaje
+                decimal tarifaAplicada = monto == tarifaBasica ? tarifaBasica : 0;
+
+                if (saldo >= tarifaAplicada)
+                {
+                    saldo -= tarifaAplicada;
+                    AcreditarSaldoPendiente();
+                    Console.WriteLine($"Descuento exitoso para Boleto Gratuito. Saldo actual: ${saldo}");
+                    return true;
+                }
+                else if (saldo + saldoNegativo >= tarifaAplicada)
+                {
+                    saldo -= tarifaAplicada;
+                    AcreditarSaldoPendiente();
+                    Console.WriteLine($"Descuento exitoso con saldo negativo para Boleto Gratuito. Saldo actual: ${saldo}");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("No se puede descontar el pasaje para Boleto Gratuito.");
+                    return false;
+                }
             }
         }
     }
 }
+

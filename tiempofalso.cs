@@ -12,7 +12,6 @@ namespace ManejoDeTiempos
 
         public TiempoFalso()
         {
-            //Crea un objeto DateTime con la fecha 14/10/2024(Lunes) con la hora en 00:00:00
             tiempo = new DateTime(2024, 10, 14);
         }
 

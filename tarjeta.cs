@@ -1,4 +1,6 @@
 ﻿using System;
+using ColectivoNamespace;
+
 
 namespace TarjetaNamespace
 {
@@ -7,12 +9,13 @@ namespace TarjetaNamespace
         private decimal saldo;
         private decimal saldoPendiente;
         private const decimal limiteSaldo = 36000;
-        protected decimal tarifaBasica = 1200;
+        public decimal tarifaBasica = 1200;
+        public decimal tarifaInterurbana = 2500;
         private readonly decimal saldoNegativo = 480;
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
         public int ViajesHoy { get; set; }
-        public int ViajesEsteMes { get; set; } 
+        public int ViajesEsteMes { get; set; }
 
 
         public Tarjeta(decimal saldoInicial)
@@ -25,7 +28,7 @@ namespace TarjetaNamespace
         {
             get { return saldoPendiente; }
         }
-        public decimal TarifaBasica => tarifaBasica; // Agrega esto en tu clase Tarjeta
+        public decimal TarifaBasica => tarifaBasica; 
 
 
         public decimal Saldo
@@ -78,29 +81,29 @@ namespace TarjetaNamespace
             }
         }
 
-        public decimal CalcularTarifa()
+        public decimal CalcularTarifa(Colectivo colectivo)
         {
-            decimal tarifaCalculada = tarifaBasica;
+            decimal tarifaCalculada = colectivo.EsInterurbano ? tarifaInterurbana : tarifaBasica;
 
             if (!(this is MedioBoleto) && !(this is BoletoGratuito))
             {
                 if (ViajesEsteMes >= 30 && ViajesEsteMes < 80)
                 {
-                    tarifaCalculada *= 0.8m; // 20% de descuento
+                    tarifaCalculada *= 0.8m; 
                 }
                 else if (ViajesEsteMes >= 80 && ViajesEsteMes <= 80)
                 {
-                    tarifaCalculada *= 0.75m; // 25% de descuento
+                    tarifaCalculada *= 0.75m; 
                 }
             }
 
             if (this is BoletoGratuito)
             {
-                tarifaCalculada = 0; // Sin costo para Boleto Gratuito
+                tarifaCalculada = 0; 
             }
             else if (this is MedioBoleto)
             {
-                tarifaCalculada /= 2; // La mitad de la tarifa normal para Medio Boleto
+                tarifaCalculada /= 2; 
             }
 
             return tarifaCalculada;
@@ -111,13 +114,11 @@ namespace TarjetaNamespace
         {
             UltimoUso = DateTime.Now;
 
-            // Reinicio de viajes mensuales si es el primer día del mes
             if (UltimoUso.Day == 1)
             {
-                ViajesEsteMes = 0; // Reinicia el contador de viajes
+                ViajesEsteMes = 0; 
             }
 
-            // El incremento de ViajesEsteMes se maneja ahora en DescontarPasaje
         }
 
         public virtual bool DescontarPasaje(decimal monto)
@@ -226,4 +227,3 @@ namespace TarjetaNamespace
         }
     }
 }
-

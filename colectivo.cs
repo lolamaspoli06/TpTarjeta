@@ -9,10 +9,10 @@ namespace ColectivoNamespace
     {
         public string Linea { get; private set; }
         private readonly decimal tarifaBasica = 940;
-        private Tiempo tiempo; 
+        private Tiempo tiempo; // Nuevo campo
 
         public decimal TarifaBasica => tarifaBasica;
- 
+        // Constructor actualizado
         public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;
@@ -31,25 +31,25 @@ namespace ColectivoNamespace
 
             if (tarjeta is MedioBoleto)
             {
+                // Usamos tiempo.Now() en lugar de DateTime.Now
                 if (tarjeta.ViajesHoy >= 4)
                 {
-                   \\No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica
+                    Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
                     totalAbonado = tarifaBasica;
                 }
 
-                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
+                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 1)
                 {
-                    \\No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica
-                      
+                    Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica");
                     totalAbonado = tarifaBasica;
-                    tarjeta.ViajesHoy-=1;
+                    tarjeta.ViajesHoy -= 1;
                 }
             }
-
+            // Restricción en boleto gratuito.
             if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
                 totalAbonado = tarifaBasica;
-                \\No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa basica
+                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))
@@ -70,4 +70,5 @@ namespace ColectivoNamespace
             return null;
         }
     }
+
 }

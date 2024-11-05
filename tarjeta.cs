@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,12 +13,12 @@ public class Tarjeta
     public DateTime UltimoUso { get; private set; }
     public int ViajesHoy { get; set; }
 
-    
+
     public Tarjeta(decimal saldoInicial)
     {
         saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
         ViajesHoy = 1;
-      
+
     }
 
     public decimal Saldo

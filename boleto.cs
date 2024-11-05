@@ -13,7 +13,7 @@ public class Boleto
     public decimal SaldoRestante { get; private set; }
     public string IdTarjeta { get; private set; }
     public string DescripcionExtra { get; private set; }
-
+  
     public Boleto(DateTime fecha, string tipoTarjeta, string lineaColectivo, decimal totalAbonado, decimal saldoRestante, string idTarjeta, string descripcionExtra)
     {
         Fecha = fecha;
@@ -25,4 +25,3 @@ public class Boleto
         DescripcionExtra = descripcionExtra;
     }
 }
-

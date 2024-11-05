@@ -30,15 +30,36 @@ namespace TarjetaNamespace;
         {
             return false;
         }
-        }
+     }
 
-        public bool DescontarPasaje()
+        public virtual bool DescontarPasaje()
         {
-            if (saldo >= tarifaBasica)
+            if (saldo >= tarifaBasica - 480)
             {
                 saldo -= tarifaBasica;
                 return true;
             }
             return false;
         }
+
+    public class MedioBoleto : Tarjeta
+    {
+        public MedioBoleto(decimal saldoInicial) : base(saldoInicial) { }
+
+        public override bool DescontarPasaje()
+        {
+            decimal tarifaConDescuento = tarifaBasica / 2;
+                saldo -= tarifaConDescuento;
+                return true;
+        }
     }
+
+    public class BoletoGratuito : Tarjeta
+    {
+        public BoletoGratuito(decimal saldoInicial) : base(saldoInicial) { }
+
+        public override bool DescontarPasaje()
+        {
+            return true;
+        }
+   }

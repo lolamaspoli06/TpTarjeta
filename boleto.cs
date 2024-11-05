@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 
 namespace BoletoNamespace;
@@ -14,7 +15,7 @@ public class Boleto
         this.SaldoRestante = saldoRestante;
         this.FechaHora = DateTime.Now;
     }
-
+  
     public override string ToString()
     {
         return $"Boleto - Saldo Restante: {SaldoRestante:C}, Fecha y Hora: {FechaHora}";

@@ -30,7 +30,7 @@ namespace TarjetaNamespace;
         {
             return false;
         }
-        }
+     }
 
         public virtual bool DescontarPasaje()
         {
@@ -62,5 +62,4 @@ namespace TarjetaNamespace;
         {
             return true;
         }
-    }
-}
+   }

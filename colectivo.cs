@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using TarjetaNamespace;
 using BoletoNamespace;
 
@@ -13,13 +13,11 @@ namespace ColectivoNamespace
             if (tarjeta.saldo >= tarjeta.precioBoleto(boleto.precio) - 480)
             {
                 tarjeta.saldo -= tarjeta.precioBoleto(boleto.precio);
-                Console.WriteLine("Pago realizado con éxito.");
             }
             else
             {
-                Console.WriteLine("Saldo insuficiente!");
+                return null;
             }
         }
-
     }
 }

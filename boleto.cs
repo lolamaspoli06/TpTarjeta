@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using TarjetaNamespace;
 using ColectivoNamespace;
 namespace BoletoNamespace
@@ -44,4 +45,3 @@ namespace BoletoNamespace
 
     }
 }
-

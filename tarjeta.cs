@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using BoletoNamespace;
 
 namespace TarjetaNamespace
@@ -11,15 +11,16 @@ namespace TarjetaNamespace
         public int ID = 123;
         public DateTime ultimaUso;
 
-        public void cargarSaldo(int monto)
+        public bool cargarSaldo(int monto)
         {
             if (monto <= limite && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000))
             {
                 saldo += monto;
+                return true;
             }
             else
             {
-                Console.WriteLine("El monto no es valido");
+                return false;
             }
         }
 
@@ -51,6 +52,17 @@ namespace TarjetaNamespace
         }
 
     }
+  
+  
+          public virtual bool DescontarPasaje()
+        {
+            if (saldo >= tarifaBasica - 480)
+            {
+                saldo -= tarifaBasica;
+                return true;
+            }
+            return false;
+        }
 
     public class MedioBoleto : Tarjeta
     {

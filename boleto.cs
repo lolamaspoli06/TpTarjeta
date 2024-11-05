@@ -1,23 +1,47 @@
+
 using System;
-using System.Collections.Generic;
-
-namespace BoletoNamespace;
-
-public class Boleto
+using TarjetaNamespace;
+using ColectivoNamespace;
+namespace BoletoNamespace
 {
-    public string Linea { get; private set; }
-    public decimal SaldoRestante { get; private set; }
-    public DateTime FechaHora { get; private set; }
 
-    public Boleto(decimal saldoRestante)
+    public class Boleto
     {
-        this.SaldoRestante = saldoRestante;
-        this.FechaHora = DateTime.Now;
-    }
-  
-  
-    public override string ToString()
-    {
-        return $"Boleto - Saldo Restante: {SaldoRestante:C}, Fecha y Hora: {FechaHora}";
+        public int precio = 940;
+        public DateTime Fecha = DateTime.Now;
+
+        public void FechaDatos()
+        {
+            Console.WriteLine($"Fecha: {Fecha.ToShortDateString()}, Hora: {Fecha.ToShortTimeString()}");
+        }
+
+        public void TipoTarjeta(Tarjeta tarjeta)
+        {
+            if (tarjeta is MedioBoleto)
+            {
+                Console.WriteLine("La tarjeta es un Medio Boleto.");
+                Console.WriteLine("El boleto tiene un valor de: " + precio / 2);
+            }
+            else if (tarjeta is FranquiciaCompleta)
+            {
+                Console.WriteLine("La tarjeta es una Franquicia Completa.");
+                Console.WriteLine("El boleto tiene un valor de: 0");
+            }
+            else
+            {
+                Console.WriteLine("La tarjeta es una Tarjeta Normal.");
+                Console.WriteLine("El boleto tiene un valor de: " + precio);
+            }
+
+            Console.WriteLine("ID de la tarjeta: " + tarjeta.ID);
+            Console.WriteLine("Saldo de la tarjeta: " + tarjeta.saldo);
+        }
+
+        public void MostrarLinea(Colectivo colectivo)
+        {
+            Console.WriteLine("Linea: " + colectivo.linea);
+        }
+
+
     }
 }

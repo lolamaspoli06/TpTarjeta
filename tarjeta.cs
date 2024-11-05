@@ -1,38 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System;
+using BoletoNamespace;
 
-namespace TarjetaNamespace;
+namespace TarjetaNamespace
+{
+
     public class Tarjeta
     {
-        private decimal saldo;
-        private readonly decimal limiteSaldo = 9900;
-        private readonly decimal tarifaBasica = 940;
+        public int saldo;
+        public int limite = 9900;
+        public int ID = 123;
+        public DateTime ultimaUso;
 
-        public Tarjeta(decimal saldoInicial)
+        public bool cargarSaldo(int monto)
         {
-            saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
+            if (monto <= limite && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000))
+            {
+                saldo += monto;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public decimal Saldo
+        public virtual int precioBoleto(int precio)
         {
-            get { return saldo; }
+            return precio;
         }
 
-    public bool CargarSaldo(decimal monto)
-    {
-        if (monto <= limiteSaldo && (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 || monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000)) { 
-            decimal nuevoSaldo = saldo + monto;
-            saldo = nuevoSaldo;
+
+        public bool TarjetaUsos(Tarjeta t)
+        {
+
+            TimeSpan tiempoDesdeUltimoUso = DateTime.Now - ultimaUso;
+            if (t is MedioBoleto)
+            {
+                if (tiempoDesdeUltimoUso.TotalMinutes >= 5)
+                {
+
+                    ultimaUso = DateTime.Now;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            ultimaUso = DateTime.Now;
             return true;
-
-        } else
-        {
-            return false;
         }
-     }
 
-        public virtual bool DescontarPasaje()
+    }
+  
+  
+          public virtual bool DescontarPasaje()
         {
             if (saldo >= tarifaBasica - 480)
             {
@@ -44,23 +66,17 @@ namespace TarjetaNamespace;
 
     public class MedioBoleto : Tarjeta
     {
-        public MedioBoleto(decimal saldoInicial) : base(saldoInicial) { }
-
-        public override bool DescontarPasaje()
+        public override int precioBoleto(int precio)
         {
-            decimal tarifaConDescuento = tarifaBasica / 2;
-                saldo -= tarifaConDescuento;
-                return true;
+            return precio / 2;
         }
     }
 
-    public class BoletoGratuito : Tarjeta
+    public class FranquiciaCompleta : Tarjeta
     {
-        public BoletoGratuito(decimal saldoInicial) : base(saldoInicial) { }
-
-        public override bool DescontarPasaje()
+        public override int precioBoleto(int precio)
         {
-            return true;
+            return 0;
         }
     }
 }

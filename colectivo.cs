@@ -1,21 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using BoletoNamespace;
+using System;
 using TarjetaNamespace;
-namespace ColectivoNamespace;
+using BoletoNamespace;
 
-public class Colectivo
+namespace ColectivoNamespace
 {
-
-    public Boleto PagarCon(Tarjeta tarjeta)
+    public class Colectivo
     {
-        if (tarjeta.DescontarPasaje())
+        public string linea = "102 144";
+        Boleto boleto = new Boleto();
+        public virtual void PagarCon(Tarjeta tarjeta)
         {
-            return new Boleto(tarjeta.Saldo);
-        }
-        else
-        {
-            return null;
+            if (tarjeta.saldo >= tarjeta.precioBoleto(boleto.precio) - 480)
+            {
+                tarjeta.saldo -= tarjeta.precioBoleto(boleto.precio);
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BoletoNamespace;
@@ -14,3 +14,4 @@ public class Boleto
         this.SaldoRestante = saldoRestante;
         this.FechaHora = DateTime.Now;
     }
+}

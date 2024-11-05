@@ -19,7 +19,7 @@ namespace Tests
             medioBoleto = new Tarjeta.MedioBoleto(4000); 
         }
         [Test]
-        public void NoDeberiaPermitirViajeEnMenosDe1MinutoConMedioBoleto()
+        public void NoDeberiaPermitirViajeEnMenosDe5MinutosConMedioBoleto()
         {
             // Simulamos el primer viaje
             var primerViaje = colectivo.PagarCon(medioBoleto);

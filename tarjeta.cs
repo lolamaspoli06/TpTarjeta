@@ -11,7 +11,7 @@ namespace TarjetaNamespace
         private decimal saldo;
         private decimal saldoPendiente;
         private const decimal limiteSaldo = 36000;
-        private readonly decimal tarifaBasica = 940;
+        public readonly decimal tarifaBasica = 940;
         private readonly decimal saldoNegativo = 480;
         public decimal tarifaInterurbana = 2500;
         public int Id { get; private set; }
@@ -78,10 +78,10 @@ namespace TarjetaNamespace
             }
         }
 
-        public decimal CalcularTarifa(Colectivo colectivo)
+        public decimal CalcularTarifa()
         {
-            decimal tarifaCalculada = colectivo.EsInterurbano ? tarifaInterurbana : tarifaBasica;
-
+            //decimal tarifaCalculada = colectivo.EsInterurbano ? tarifaInterurbana : tarifaBasica;
+            decimal tarifaCalculada = tarifaBasica;
             if (!(this is MedioBoleto) && !(this is BoletoGratuito))
             {
                 if (ViajesEsteMes >= 30 && ViajesEsteMes < 80)
@@ -176,7 +176,7 @@ namespace TarjetaNamespace
                 else if (saldo + saldoNegativo >= tarifaAplicada)
                 {
                     saldo -= tarifaAplicada;
-                    AcreditarSaldoPendiente();;
+                    AcreditarSaldoPendiente(); ;
                     return true;
                 }
                 else

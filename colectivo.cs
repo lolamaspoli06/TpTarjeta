@@ -12,9 +12,9 @@ namespace ColectivoNamespace
         private readonly decimal tarifaBasica = 1200;
         private Tiempo tiempo;
 
-        public bool EsInterurbano { get; protected set; } = false; 
+        public bool EsInterurbano { get; protected set; } = false;
 
-   
+
         public Colectivo(string linea, Tiempo tiempo, bool esInterurbano = false)
         {
             this.Linea = linea;
@@ -22,7 +22,7 @@ namespace ColectivoNamespace
             this.EsInterurbano = esInterurbano;
         }
 
-        public Boleto PagarCon(Tarjeta tarjeta, Colectivo colectivo)
+        public Boleto PagarCon(Tarjeta tarjeta)
         {
             DateTime now = tiempo.Now();
 
@@ -32,7 +32,8 @@ namespace ColectivoNamespace
                 return null;
             }
 
-            decimal totalAbonado = tarjeta.CalcularTarifa(colectivo);
+
+            decimal totalAbonado = tarjeta.CalcularTarifa();
             string descripcionExtra = "";
 
             if (tarjeta.SaldoNegativo > 0)
@@ -45,30 +46,30 @@ namespace ColectivoNamespace
                 if (tarjeta.ViajesHoy >= 4)
                 {
                     Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
-                    totalAbonado = tarjeta.TarifaBasica;
+                    totalAbonado = tarjeta.tarifaBasica;
                 }
 
-                
-                if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5) 
+
+                if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
                 {
                     Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica.");
-                    totalAbonado = tarjeta.TarifaBasica;
-                    tarjeta.ViajesHoy--; 
+                    totalAbonado = tarjeta.tarifaBasica;
+                    tarjeta.ViajesHoy--;
                 }
             }
 
 
             if (tarjeta is Tarjeta.BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
-                totalAbonado = tarjeta.TarifaBasica; 
+                totalAbonado = tarjeta.tarifaBasica;
                 Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))
             {
-                tarjeta.ActualizarUltimoUso(); 
-                tarjeta.ViajesHoy++; 
-                
+                tarjeta.ActualizarUltimoUso();
+                tarjeta.ViajesHoy++;
+
                 return new Boleto(
                     DateTime.Now,
                     tarjeta.GetType().Name,
@@ -113,4 +114,11 @@ namespace ColectivoNamespace
 
 
     }
+
+    public class InterUrbano : Colectivo
+    {
+        public InterUrbano(string linea, Tiempo tiempo, decimal tarifaBasica) : base(linea, tiempo,  tarifaBasica) { }
+
+    }
+
 }

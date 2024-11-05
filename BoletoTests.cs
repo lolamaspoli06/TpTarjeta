@@ -15,6 +15,7 @@ namespace TestsTp
         private Colectivo colectivo;
         private Tarjeta.BoletoGratuito tarjetaGratuita;
         private Tarjeta tarjeta;
+        private Tiempo tiempo;
 
         [SetUp]
         public void SetUp()
@@ -100,7 +101,7 @@ namespace TestsTp
         public void NoPermiteViajeConMedioBoletoFueraDeHorario()
         {
             var medioBoleto = new Tarjeta.MedioBoleto(500);
-
+            tiempo = new Tiempo();
 
             tiempo.AgregarDias(5);
             tiempo.AgregarMinutos(300);

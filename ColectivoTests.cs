@@ -4,7 +4,8 @@ using TarjetaNamespace;
 using ColectivoNamespace;
 using BoletoNamespace;
 
-namespace Tests
+namespace ColectivoTest
+    
 {
     [TestFixture]
     public class FranquiciaHorarioTests

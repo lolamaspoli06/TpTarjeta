@@ -1,4 +1,4 @@
-﻿using BoletoNamespace;
+using BoletoNamespace;
 using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
 using TarjetaNamespace;
@@ -9,10 +9,10 @@ namespace ColectivoNamespace
     {
         public string Linea { get; private set; }
         private readonly decimal tarifaBasica = 940;
-        private Tiempo tiempo; // Nuevo campo
+        private Tiempo tiempo; 
 
         public decimal TarifaBasica => tarifaBasica;
-        // Constructor actualizado
+ 
         public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;
@@ -31,25 +31,25 @@ namespace ColectivoNamespace
 
             if (tarjeta is MedioBoleto)
             {
-                // Usamos tiempo.Now() en lugar de DateTime.Now
                 if (tarjeta.ViajesHoy >= 4)
                 {
-                    Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
+                   \\No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica
                     totalAbonado = tarifaBasica;
                 }
 
                 if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
                 {
-                    Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica");
+                    \\No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica
+                      
                     totalAbonado = tarifaBasica;
                     tarjeta.ViajesHoy-=1;
                 }
             }
-            // Restricción en boleto gratuito.
+
             if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
                 totalAbonado = tarifaBasica;
-                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
+                \\No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa basica
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))
@@ -70,5 +70,4 @@ namespace ColectivoNamespace
             return null;
         }
     }
-
 }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using ManejoDeTiempos;
 using ColectivoNamespace;
-
 
 namespace TarjetaNamespace
 {
@@ -9,9 +11,9 @@ namespace TarjetaNamespace
         private decimal saldo;
         private decimal saldoPendiente;
         private const decimal limiteSaldo = 36000;
-        public decimal tarifaBasica = 1200;
-        public decimal tarifaInterurbana = 2500;
+        private readonly decimal tarifaBasica = 940;
         private readonly decimal saldoNegativo = 480;
+        public decimal tarifaInterurbana = 2500;
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
         public int ViajesHoy { get; set; }
@@ -22,36 +24,32 @@ namespace TarjetaNamespace
         {
             saldo = saldoInicial > limiteSaldo ? limiteSaldo : saldoInicial;
             ViajesHoy = 1;
+
         }
 
         public decimal SaldoPendiente
         {
             get { return saldoPendiente; }
         }
-        public decimal TarifaBasica => tarifaBasica; 
-
-
         public decimal Saldo
         {
             get { return saldo; }
         }
-
         public void ProcesarSaldoPendiente()
         {
             AcreditarSaldoPendiente();
         }
-
         public bool CargarSaldo(decimal monto)
         {
+            // Validar que el monto es permitido
             if (monto == 2000 || monto == 3000 || monto == 4000 || monto == 5000 ||
                 monto == 6000 || monto == 7000 || monto == 8000 || monto == 9000)
             {
                 decimal espacioDisponible = limiteSaldo - saldo;
-
                 if (monto <= espacioDisponible)
                 {
                     saldo += monto;
-                    saldoPendiente = 0;
+                    saldoPendiente = 0; // No hay saldo pendiente si la carga se realiza completamente.
                     Console.WriteLine($"Saldo cargado exitosamente. Saldo actual: ${saldo}");
                 }
                 else
@@ -64,7 +62,6 @@ namespace TarjetaNamespace
             }
             else
             {
-                Console.WriteLine("Monto de carga no permitido.");
                 return false;
             }
         }
@@ -89,21 +86,21 @@ namespace TarjetaNamespace
             {
                 if (ViajesEsteMes >= 30 && ViajesEsteMes < 80)
                 {
-                    tarifaCalculada *= 0.8m; 
+                    tarifaCalculada *= 0.8m;
                 }
                 else if (ViajesEsteMes >= 80 && ViajesEsteMes <= 80)
                 {
-                    tarifaCalculada *= 0.75m; 
+                    tarifaCalculada *= 0.75m;
                 }
             }
 
             if (this is BoletoGratuito)
             {
-                tarifaCalculada = 0; 
+                tarifaCalculada = 0;
             }
             else if (this is MedioBoleto)
             {
-                tarifaCalculada /= 2; 
+                tarifaCalculada /= 2;
             }
 
             return tarifaCalculada;
@@ -116,10 +113,23 @@ namespace TarjetaNamespace
 
             if (UltimoUso.Day == 1)
             {
-                ViajesEsteMes = 0; 
+                ViajesEsteMes = 0;
             }
 
         }
+
+        private void AcreditarSaldoPendiente()
+        {
+            if (saldo < limiteSaldo && saldoPendiente > 0)
+            {
+                decimal espacioDisponible = limiteSaldo - saldo;
+                decimal montoAcreditar = Math.Min(saldoPendiente, espacioDisponible);
+                saldo += montoAcreditar;
+                saldoPendiente -= montoAcreditar;
+                Console.WriteLine($"Se acreditaron ${montoAcreditar} del saldo pendiente. Saldo actual: ${saldo}. Saldo pendiente restante: ${saldoPendiente}");
+            }
+        }
+
 
         public virtual bool DescontarPasaje(decimal monto)
         {
@@ -145,24 +155,7 @@ namespace TarjetaNamespace
             }
             else
             {
-                Console.WriteLine("No se puede descontar el pasaje.");
                 return false;
-            }
-        }
-
-
-
-        private void AcreditarSaldoPendiente()
-        {
-            if (saldo < limiteSaldo && saldoPendiente > 0)
-            {
-                decimal espacioDisponible = limiteSaldo - saldo;
-                decimal montoAcreditar = Math.Min(saldoPendiente, espacioDisponible);
-
-                saldo += montoAcreditar;
-                saldoPendiente -= montoAcreditar;
-
-                Console.WriteLine($"Se acreditaron ${montoAcreditar} del saldo pendiente. Saldo actual: ${saldo}. Saldo pendiente restante: ${saldoPendiente}");
             }
         }
 
@@ -178,19 +171,17 @@ namespace TarjetaNamespace
                 {
                     saldo -= tarifaAplicada;
                     AcreditarSaldoPendiente();
-                    Console.WriteLine($"Descuento exitoso para Medio Boleto. Saldo actual: ${saldo}");
                     return true;
                 }
                 else if (saldo + saldoNegativo >= tarifaAplicada)
                 {
                     saldo -= tarifaAplicada;
-                    AcreditarSaldoPendiente();
-                    Console.WriteLine($"Descuento exitoso con saldo negativo para Medio Boleto. Saldo actual: ${saldo}");
+                    AcreditarSaldoPendiente();;
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("No se puede descontar el pasaje para Medio Boleto.");
+
                     return false;
                 }
             }
@@ -208,22 +199,20 @@ namespace TarjetaNamespace
                 {
                     saldo -= tarifaAplicada;
                     AcreditarSaldoPendiente();
-                    Console.WriteLine($"Descuento exitoso para Boleto Gratuito. Saldo actual: ${saldo}");
                     return true;
                 }
                 else if (saldo + saldoNegativo >= tarifaAplicada)
                 {
                     saldo -= tarifaAplicada;
                     AcreditarSaldoPendiente();
-                    Console.WriteLine($"Descuento exitoso con saldo negativo para Boleto Gratuito. Saldo actual: ${saldo}");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("No se puede descontar el pasaje para Boleto Gratuito.");
                     return false;
                 }
             }
+
         }
     }
 }

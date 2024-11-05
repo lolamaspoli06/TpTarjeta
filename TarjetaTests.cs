@@ -4,7 +4,8 @@ using ColectivoNamespace;
 using BoletoNamespace;
 using ManejoDeTiempos;
 
-namespace TestsTp
+namespace TarjetaTest
+    
 {
     [TestFixture]
     public class TarjetaTests

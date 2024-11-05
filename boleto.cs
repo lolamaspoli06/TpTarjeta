@@ -23,6 +23,6 @@ public class Boleto
         SaldoRestante = saldoRestante;
         IdTarjeta = idTarjeta;
         DescripcionExtra = descripcionExtra;
-
     }
 }
+

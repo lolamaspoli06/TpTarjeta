@@ -1,4 +1,3 @@
-
 using BoletoNamespace;
 using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
@@ -13,7 +12,7 @@ namespace ColectivoNamespace
         private Tiempo tiempo; 
 
         public decimal TarifaBasica => tarifaBasica;
-
+ 
         public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;
@@ -41,10 +40,12 @@ namespace ColectivoNamespace
                 if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 5)
                 {
                     \\No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica
+                      
                     totalAbonado = tarifaBasica;
                     tarjeta.ViajesHoy-=1;
                 }
             }
+
             if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
                 totalAbonado = tarifaBasica;
@@ -70,4 +71,3 @@ namespace ColectivoNamespace
         }
     }
 }
-

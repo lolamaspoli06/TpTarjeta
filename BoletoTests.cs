@@ -13,7 +13,8 @@ namespace BoletoTest
         private const decimal tarifa = 940m;
         private TiempoFalso tiempoFalso;
         private Colectivo colectivo;
-        private Tarjeta.BoletoGratuito tarjetaGratuita;
+        private BoletoGratuito tarjetaGratuita;
+        private MedioBoleto medioBoleto;
         private Tarjeta tarjeta;
         private Tiempo tiempo;
 
@@ -22,7 +23,7 @@ namespace BoletoTest
         {
             tiempoFalso = new TiempoFalso(); // Usamos TiempoFalso para simular el tiempo
             colectivo = new Colectivo("linea 120", tiempoFalso);
-            tarjetaGratuita = new Tarjeta.BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
+            tarjetaGratuita = new BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
         }
 
 
@@ -78,7 +79,7 @@ namespace BoletoTest
         [Test]
         public void Test_MedioBoleto()
         {
-            var tarjeta = new MedioBoleto(0);
+            medioBoleto = new MedioBoleto(0);
             tarjeta.CargarSaldo(2000);
 
             colectivo.PagarCon(tarjeta);

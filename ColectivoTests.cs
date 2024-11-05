@@ -41,7 +41,7 @@ namespace ColectivoTest
             [Test]
             public void NoPermiteViajeConMedioBoletoFueraDeHorario()
             {
-                var medioBoleto = new Tarjeta.MedioBoleto(500);
+                var medioBoleto = new MedioBoleto(500);
 
 
                 tiempo.AgregarDias(5);
@@ -54,7 +54,7 @@ namespace ColectivoTest
             [Test]
             public void NoPermiteViajeConBoletoGratuitoFueraDeHorario()
             {
-                var boletoGratuito = new Tarjeta.BoletoGratuito(500);
+                var boletoGratuito = new BoletoGratuito(500);
 
 
                 tiempo.AgregarDias(1);
@@ -67,7 +67,7 @@ namespace ColectivoTest
             [Test]
             public void PermiteViajeConMedioBoletoEnHorarioPermitido()
             {
-                var medioBoleto = new Tarjeta.MedioBoleto(500);
+                var medioBoleto = new MedioBoleto(500);
 
 
                 tiempo.AgregarDias(2);
@@ -80,7 +80,7 @@ namespace ColectivoTest
             [Test]
             public void PermiteViajeConBoletoGratuitoEnHorarioPermitido()
             {
-                var boletoGratuito = new Tarjeta.BoletoGratuito(500);
+                var boletoGratuito = new BoletoGratuito(500);
 
 
                 tiempo.AgregarDias(3);

@@ -8,8 +8,8 @@ namespace TarjetaNamespace
 {
     public class Tarjeta
     {
-        private decimal saldo;
-        private decimal saldoPendiente;
+        protected decimal saldo;
+        protected decimal saldoPendiente;
         private const decimal limiteSaldo = 36000;
         public readonly decimal tarifaBasica = 940;
         private readonly decimal saldoNegativo = 480;
@@ -118,7 +118,7 @@ namespace TarjetaNamespace
 
         }
 
-        private void AcreditarSaldoPendiente()
+        protected void AcreditarSaldoPendiente()
         {
             if (saldo < limiteSaldo && saldoPendiente > 0)
             {
@@ -159,7 +159,7 @@ namespace TarjetaNamespace
             }
         }
 
-        public class MedioBoleto : Tarjeta
+    /*    public class MedioBoleto : Tarjeta
         {
             public MedioBoleto(decimal saldoInicial) : base(saldoInicial) { }
 
@@ -185,9 +185,9 @@ namespace TarjetaNamespace
                     return false;
                 }
             }
-        }
+        }*/
 
-        public class BoletoGratuito : Tarjeta
+/*        public class BoletoGratuito : Tarjeta
         {
             public BoletoGratuito(decimal saldoInicial) : base(saldoInicial) { }
 
@@ -213,6 +213,6 @@ namespace TarjetaNamespace
                 }
             }
 
-        }
+        }*/
     }
 }

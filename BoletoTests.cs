@@ -5,7 +5,7 @@ using BoletoNamespace;
 using static TarjetaNamespace.Tarjeta;
 using ManejoDeTiempos;
 
-namespace TestsTp
+namespace BoletoTest
 {
     [TestFixture]
     public class BoletoTest

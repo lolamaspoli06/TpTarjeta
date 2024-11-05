@@ -1,47 +1,28 @@
 
 using System;
-using TarjetaNamespace;
-using ColectivoNamespace;
-namespace BoletoNamespace
+using System.Collections.Generic;
+
+namespace BoletoNamespace;
+
+public class Boleto
 {
+    public DateTime Fecha { get; private set; }
+    public string TipoTarjeta { get; private set; }
+    public string LineaColectivo { get; private set; }
+    public decimal TotalAbonado { get; private set; }
+    public decimal SaldoRestante { get; private set; }
+    public string IdTarjeta { get; private set; }
+    public string DescripcionExtra { get; private set; }
 
-    public class Boleto
+    public Boleto(DateTime fecha, string tipoTarjeta, string lineaColectivo, decimal totalAbonado, decimal saldoRestante, string idTarjeta, string descripcionExtra)
     {
-        public int precio = 940;
-        public DateTime Fecha = DateTime.Now;
-
-        public void FechaDatos()
-        {
-            Console.WriteLine($"Fecha: {Fecha.ToShortDateString()}, Hora: {Fecha.ToShortTimeString()}");
-        }
-
-        public void TipoTarjeta(Tarjeta tarjeta)
-        {
-            if (tarjeta is MedioBoleto)
-            {
-                Console.WriteLine("La tarjeta es un Medio Boleto.");
-                Console.WriteLine("El boleto tiene un valor de: " + precio / 2);
-            }
-            else if (tarjeta is FranquiciaCompleta)
-            {
-                Console.WriteLine("La tarjeta es una Franquicia Completa.");
-                Console.WriteLine("El boleto tiene un valor de: 0");
-            }
-            else
-            {
-                Console.WriteLine("La tarjeta es una Tarjeta Normal.");
-                Console.WriteLine("El boleto tiene un valor de: " + precio);
-            }
-
-            Console.WriteLine("ID de la tarjeta: " + tarjeta.ID);
-            Console.WriteLine("Saldo de la tarjeta: " + tarjeta.saldo);
-        }
-
-        public void MostrarLinea(Colectivo colectivo)
-        {
-            Console.WriteLine("Linea: " + colectivo.linea);
-        }
-
+        Fecha = fecha;
+        TipoTarjeta = tipoTarjeta;
+        LineaColectivo = lineaColectivo;
+        TotalAbonado = totalAbonado;
+        SaldoRestante = saldoRestante;
+        IdTarjeta = idTarjeta;
+        DescripcionExtra = descripcionExtra;
 
     }
 }

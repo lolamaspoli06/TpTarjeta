@@ -2,7 +2,7 @@ using NUnit.Framework;
 using TarjetaNamespace;
 
 
-namespace Tests
+namespace TestsIteracion1
 {
     [TestFixture]
     public class TarjetaTests

@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 
 namespace BoletoNamespace;
@@ -22,5 +23,6 @@ public class Boleto
         SaldoRestante = saldoRestante;
         IdTarjeta = idTarjeta;
         DescripcionExtra = descripcionExtra;
+
     }
 }

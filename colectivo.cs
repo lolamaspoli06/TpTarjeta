@@ -1,4 +1,5 @@
-﻿using BoletoNamespace;
+
+using BoletoNamespace;
 using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
 using TarjetaNamespace;
@@ -68,5 +69,5 @@ namespace ColectivoNamespace
             return null;
         }
     }
-
 }
+

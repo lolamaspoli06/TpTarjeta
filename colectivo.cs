@@ -41,7 +41,7 @@ namespace ColectivoNamespace
                 descripcionExtra = $"Abona saldo negativo: {tarjeta.SaldoNegativo}";
             }
 
-            if (tarjeta is Tarjeta.MedioBoleto medioBoleto)
+            if (tarjeta is MedioBoleto medioBoleto)
             {
                 if (tarjeta.ViajesHoy >= 4)
                 {
@@ -59,7 +59,7 @@ namespace ColectivoNamespace
             }
 
 
-            if (tarjeta is Tarjeta.BoletoGratuito && tarjeta.ViajesHoy > 2)
+            if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
             {
                 totalAbonado = tarjeta.tarifaBasica;
                 Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");

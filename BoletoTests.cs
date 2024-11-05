@@ -97,17 +97,17 @@ namespace BoletoTest
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000), "Es franquicia completa, el precio deberia ser 0");
         }
 
-        [Test]
-        public void NoPermiteViajeConMedioBoletoFueraDeHorario()
-        {
-            var medioBoleto = new Tarjeta.MedioBoleto(500);
-            tiempo = new Tiempo();
+        //[Test]
+        //public void NoPermiteViajeConMedioBoletoFueraDeHorario()
+        //{
+        //    var medioBoleto = new Tarjeta.MedioBoleto(500);
+        //    tiempo = new Tiempo();
 
-            tiempo.AgregarDias(5);
-            tiempo.AgregarMinutos(300);
+        //    tiempo.AgregarDias(5);
+        //    tiempo.AgregarMinutos(300);
 
-            var boleto = colectivo.PagarCon(medioBoleto);
-            Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
-        }
+        //    var boleto = colectivo.PagarCon(medioBoleto);
+        //    Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
+        //}
     }
 }

@@ -115,10 +115,10 @@ namespace ColectivoNamespace
 
     }
 
-    public class InterUrbano : Colectivo
+/*    public class InterUrbano : Colectivo
     {
         public InterUrbano(string linea, Tiempo tiempo, decimal tarifaBasica) : base(linea, tiempo,  tarifaBasica) { }
 
-    }
+    }*/
 
 }

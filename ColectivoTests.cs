@@ -5,155 +5,7 @@ using ColectivoNamespace;
 using BoletoNamespace;
 
 namespace ColectivoTest
-    
 {
-    [TestFixture]
-    public class FranquiciaHorarioTests
-    {
-        private TiempoFalso tiempo;
-        private Colectivo colectivo;
-        private Tarjeta tarjeta;
-
-        [SetUp]
-        public void Setup()
-        {
-            tiempo = new TiempoFalso();
-            colectivo = new Colectivo("Linea 120", tiempo);
-            tarjeta = new Tarjeta(10000);
-            decimal tarifaBasica = tarjeta.tarifaBasica;
-        }
-
-        [Test]
-        public void NoPermiteViajeConMedioBoletoFueraDeHorario()
-        {
-            var medioBoleto = new Tarjeta.MedioBoleto(500);
-
-
-            tiempo.AgregarDias(5);
-            tiempo.AgregarMinutos(300);
-
-            var boleto = colectivo.PagarCon(medioBoleto);
-            Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
-        }
-
-        [Test]
-        public void NoPermiteViajeConBoletoGratuitoFueraDeHorario()
-        {
-            var boletoGratuito = new Tarjeta.BoletoGratuito(500);
-
-
-            tiempo.AgregarDias(1);
-            tiempo.AgregarMinutos(1380);
-
-            var boleto = colectivo.PagarCon(boletoGratuito);
-            Assert.IsNull(boleto, "No se debería permitir un viaje con Boleto Gratuito fuera del horario permitido.");
-        }
-
-        [Test]
-        public void PermiteViajeConMedioBoletoEnHorarioPermitido()
-        {
-            var medioBoleto = new Tarjeta.MedioBoleto(500);
-
-
-            tiempo.AgregarDias(2);
-            tiempo.AgregarMinutos(600);
-
-            var boleto = colectivo.PagarCon(medioBoleto);
-            Assert.IsNotNull(boleto, "Se debería permitir un viaje con Medio Boleto en el horario permitido.");
-        }
-
-        [Test]
-        public void PermiteViajeConBoletoGratuitoEnHorarioPermitido()
-        {
-            var boletoGratuito = new Tarjeta.BoletoGratuito(500);
-
-
-            tiempo.AgregarDias(3);
-            tiempo.AgregarMinutos(900);
-
-            var boleto = colectivo.PagarCon(boletoGratuito);
-            Assert.IsNotNull(boleto, "Se debería permitir un viaje con Boleto Gratuito en el horario permitido.");
-        }
-    }
-
-    [TestFixture]
-    public class TarjetaTests
-    {
-        private Tarjeta tarjeta;
-        private Colectivo colectivo;
-
-        [SetUp]
-        public void Setup()
-        {
-            var tiempo = new Tiempo();
-            colectivo = new Colectivo("linea 120", tiempo);
-            tarjeta = new Tarjeta(5000);
-        }
-
-        [Test]
-        public void TestTarifaNormalSinDescuento()
-        {
-            tarjeta = new Tarjeta(10000) { ViajesEsteMes = 10 };
-            decimal tarifa = tarjeta.CalcularTarifa();
-            Assert.AreEqual(tarjeta.tarifaBasica, tarifa);
-        }
-
-        [Test]
-        public void TestTarifaConDescuento20()
-        {
-            tarjeta = new Tarjeta(10000) { ViajesEsteMes = 30 };
-            decimal tarifa = tarjeta.CalcularTarifa();
-            Assert.AreEqual(tarjeta.tarifaBasica * 0.8m, tarifa);
-        }
-
-        [Test]
-        public void TestTarifaConDescuento25()
-        {
-            tarjeta = new Tarjeta(10000) { ViajesEsteMes = 80 };
-            decimal tarifa = tarjeta.CalcularTarifa();
-            Assert.AreEqual(tarjeta.tarifaBasica * 0.75m, tarifa);
-        }
-
-        [Test]
-        public void TestTarifaNormalConMasDe80Viajes()
-        {
-            tarjeta = new Tarjeta(10000) { ViajesEsteMes = 81 };
-            decimal tarifa = tarjeta.CalcularTarifa();
-            Assert.AreEqual(tarjeta.tarifaBasica, tarifa); 
-        }
-
-        [Test]
-        public void MedioBoleto_NoAplicaDescuentoFrecuente()
-        {
-            var medioBoleto = new Tarjeta.MedioBoleto(10000);
-            decimal tarifaEsperada = tarjeta.tarifaBasica / 2;
-
-            for (int i = 1; i <= 80; i++)
-            {
-                decimal tarifa = medioBoleto.CalcularTarifa();
-                Assert.That(tarifa, Is.EqualTo(tarifaEsperada).Within(0.01), $"Viaje {i}: tarifa incorrecta para Medio Boleto");
-
-                medioBoleto.DescontarPasaje(tarifa);
-                medioBoleto.ActualizarUltimoUso();
-            }
-        }
-
-        [Test]
-        public void BoletoGratuito_NoAplicaDescuentoFrecuente()
-        {
-            var boletoGratuito = new Tarjeta.BoletoGratuito(10000);
-
-            for (int i = 1; i <= 80; i++)
-            {
-                decimal tarifa = boletoGratuito.CalcularTarifa();
-                Assert.That(tarifa, Is.EqualTo(0), $"Viaje {i}: tarifa incorrecta para Boleto Gratuito");
-
-                boletoGratuito.DescontarPasaje(0);
-                boletoGratuito.ActualizarUltimoUso();
-            }
-        }
-    }
-
     [TestFixture]
     public class ColectivoTests
     {
@@ -170,6 +22,74 @@ namespace ColectivoTest
             interurbana = new Tarjeta(10000);
             decimal tarifaInterurbana = interurbana.tarifaInterurbana;
     }
+
+        public class FranquiciaHorarioTests
+        {
+            private TiempoFalso tiempo;
+            private Colectivo colectivo;
+            private Tarjeta tarjeta;
+
+            [SetUp]
+            public void Setup()
+            {
+                tiempo = new TiempoFalso();
+                colectivo = new Colectivo("Linea 120", tiempo);
+                tarjeta = new Tarjeta(10000);
+                decimal tarifaBasica = tarjeta.tarifaBasica;
+            }
+
+            [Test]
+            public void NoPermiteViajeConMedioBoletoFueraDeHorario()
+            {
+                var medioBoleto = new Tarjeta.MedioBoleto(500);
+
+
+                tiempo.AgregarDias(5);
+                tiempo.AgregarMinutos(300);
+
+                var boleto = colectivo.PagarCon(medioBoleto);
+                Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
+            }
+
+            [Test]
+            public void NoPermiteViajeConBoletoGratuitoFueraDeHorario()
+            {
+                var boletoGratuito = new Tarjeta.BoletoGratuito(500);
+
+
+                tiempo.AgregarDias(1);
+                tiempo.AgregarMinutos(1380);
+
+                var boleto = colectivo.PagarCon(boletoGratuito);
+                Assert.IsNull(boleto, "No se debería permitir un viaje con Boleto Gratuito fuera del horario permitido.");
+            }
+
+            [Test]
+            public void PermiteViajeConMedioBoletoEnHorarioPermitido()
+            {
+                var medioBoleto = new Tarjeta.MedioBoleto(500);
+
+
+                tiempo.AgregarDias(2);
+                tiempo.AgregarMinutos(600);
+
+                var boleto = colectivo.PagarCon(medioBoleto);
+                Assert.IsNotNull(boleto, "Se debería permitir un viaje con Medio Boleto en el horario permitido.");
+            }
+
+            [Test]
+            public void PermiteViajeConBoletoGratuitoEnHorarioPermitido()
+            {
+                var boletoGratuito = new Tarjeta.BoletoGratuito(500);
+
+
+                tiempo.AgregarDias(3);
+                tiempo.AgregarMinutos(900);
+
+                var boleto = colectivo.PagarCon(boletoGratuito);
+                Assert.IsNotNull(boleto, "Se debería permitir un viaje con Boleto Gratuito en el horario permitido.");
+            }
+        }
 
         //[Test]
         //public void TestTarifaInterurbana()

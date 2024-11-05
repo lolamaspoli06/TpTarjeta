@@ -5,7 +5,6 @@ using BoletoNamespace;
 using ManejoDeTiempos;
 
 namespace TarjetaTest
-    
 {
     [TestFixture]
     public class TarjetaTests

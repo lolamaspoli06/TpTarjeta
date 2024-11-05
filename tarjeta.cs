@@ -30,11 +30,11 @@ namespace TarjetaNamespace;
         {
             return false;
         }
-        }
+     }
 
         public virtual bool DescontarPasaje()
         {
-            if (saldo >= tarifaBasica)
+            if (saldo >= tarifaBasica - 480)
             {
                 saldo -= tarifaBasica;
                 return true;

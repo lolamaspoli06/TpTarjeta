@@ -19,8 +19,6 @@ namespace ColectivoNamespace
             this.tiempo = tiempo;
             this.EsInterurbano = esInterurbano;
         }
-
-        // Función generalizada para pagar con tarjeta normal
         public Boleto PagarConTarjetaNormal(Tarjeta tarjeta)
         {
             decimal totalAbonado = tarjeta.CalcularTarifa();
@@ -97,12 +95,34 @@ namespace ColectivoNamespace
             return null;
         }
 
-        // Función específica para pagar con medio boleto jubilado
-        public Boleto PagarConMedioBoletoJubilado(MedioBoleto medioBoletoJubilado)
-        {
-            return PagarConMedioBoleto(medioBoletoJubilado); // Lógica similar a la de MedioBoleto
-        }
 
+/*        public Boleto PagarConGratuitoJubilado(BoletoGratuitoJubilados medioBoletoJubilado)
+        {
+            DateTime now = tiempo.Now();
+            decimal totalAbonado = 0;
+
+            if (!HorarioPermitido(now))
+            {
+                Console.WriteLine("No se puede usar boleto gratuito fuera del horario permitido (Lunes a Viernes de 6 a 22).");
+                return null;
+            }
+            if (BoletoGratuitoJubilados.DescontarPasaje(totalAbonado))
+            {
+                boletoGratuito.ActualizarUltimoUso();
+                boletoGratuito.ViajesHoy++;
+                return new Boleto(
+                    DateTime.Now,
+                    boletoGratuito.GetType().Name,
+                    this.Linea,
+                    totalAbonado,
+                    boletoGratuito.Saldo,
+                    boletoGratuito.Id.ToString(),
+                    descripcionExtra
+                );
+            }
+            return null;
+        }
+*/
         // Función específica para pagar con boleto gratuito
         public Boleto PagarConBoletoGratuito(BoletoGratuito boletoGratuito)
         {

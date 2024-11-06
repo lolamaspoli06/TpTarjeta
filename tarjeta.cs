@@ -12,7 +12,7 @@ namespace TarjetaNamespace
         protected decimal saldoPendiente;
         private const decimal limiteSaldo = 36000;
         public readonly decimal tarifaBasica = 940;
-        private readonly decimal saldoNegativo = 480;
+        public readonly decimal saldoNegativo = 480;
         public decimal tarifaInterurbana = 2500;
         public int Id { get; private set; }
         public DateTime UltimoUso { get; private set; }
@@ -94,7 +94,7 @@ namespace TarjetaNamespace
                 }
             }
 
-            if (this is BoletoGratuito)
+            if (this is BoletoGratuito )
             {
                 tarifaCalculada = 0;
             }

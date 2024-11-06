@@ -69,21 +69,25 @@ class Program
                     break;
 
                 case "3":
-                    Boleto boleto = colectivo.PagarCon(tarjeta);
+                    // Llamar a la función específica según el tipo de tarjeta
+                    Boleto boleto = null;
+
+                    if (tarjeta is Tarjeta)
+                    {
+                        boleto = colectivo.PagarConTarjetaNormal(tarjeta);
+                    }
+                    else if (tarjeta is MedioBoleto)
+                    {
+                        boleto = colectivo.PagarConMedioBoleto((MedioBoleto)tarjeta);
+                    }
+                    else if (tarjeta is BoletoGratuito)
+                    {
+                        boleto = colectivo.PagarConBoletoGratuito((BoletoGratuito)tarjeta);
+                    }
+
                     if (boleto != null)
                     {
-                        if (tarjeta is BoletoGratuito)
-                        {
-                            Console.WriteLine($"Viaje pagado con boleto gratuito. Saldo restante: ${boleto.SaldoRestante}");
-                        }
-                        if (tarjeta is MedioBoleto)
-                        {
-                            Console.WriteLine($"Viaje pagado con medio boleto. Saldo restante: ${boleto.SaldoRestante}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
-                        }
+                        Console.WriteLine($"Viaje pagado. Saldo restante: ${boleto.SaldoRestante}");
                     }
                     else
                     {

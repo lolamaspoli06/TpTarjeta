@@ -4,7 +4,7 @@ using ColectivoNamespace;
 using BoletoNamespace;
 using ManejoDeTiempos;
 
-namespace TestsTp
+namespace TarjetaTest
 {
     [TestFixture]
     public class TarjetaTests
@@ -19,7 +19,7 @@ namespace TestsTp
             colectivo = new Colectivo("Línea 120", tiempoFalso);
         }
 
-
+        //test Iteracion 1
         [Test]
         [TestCase(2000)]
         [TestCase(3000)]
@@ -31,16 +31,15 @@ namespace TestsTp
         [TestCase(9000)]
         public void CargarSaldo_ConMontosValidos_DeberiaCargarCorrectamente(int monto)
         {
-            // Arrange
+
             var tarjeta = new Tarjeta(0);
 
-            // Act
             tarjeta.CargarSaldo(monto);
 
-            // Assert
             Assert.AreEqual(monto, tarjeta.Saldo, $"El saldo cargado debería ser {monto}, pero fue {tarjeta.Saldo}");
         }
 
+        //Test Iteracion 1
         [Test]
         [TestCase(1000)]
         [TestCase(1500)]
@@ -55,7 +54,7 @@ namespace TestsTp
             Assert.AreEqual(0, tarjeta.Saldo, $"El saldo debería ser 0, pero fue {tarjeta.Saldo}");
         }
 
-
+        //Test Iteracion 2: Descuento Saldos
         [Test]
         public void Test_PagarConSaldoSuficiente()
         {
@@ -71,6 +70,7 @@ namespace TestsTp
             Assert.AreEqual(1060, tarjeta.Saldo);
         }
 
+        //Test Iteracion 2: Descuento Saldos
         [Test]
         public void Test_PagarConSaldoInsuficiente()
         {
@@ -88,6 +88,7 @@ namespace TestsTp
             Assert.AreEqual(120, tarjeta.Saldo);
         }
 
+        //Test Iteracion 2: Saldo Negativo
         [Test]
         public void Test_TarjetaNoQuedaConSaldoNegativo()
         {
@@ -103,7 +104,7 @@ namespace TestsTp
             Assert.GreaterOrEqual(tarjeta.Saldo, 0, "La tarjeta no deberIa quedar con saldo negativo.");
         }
 
-
+        //Test Iteracion 2: Saldo Negativo
         [Test]
         public void Test_DescuentoCorrectoDelSaldo()
         {
@@ -121,7 +122,7 @@ namespace TestsTp
         }
 
 
-
+        //Test Iteracion 3: Acreditacion de saldo
         [Test]
         public void CargarSaldo_SuperaLimite_SaldoPendienteAlmacenado()
         {
@@ -135,6 +136,8 @@ namespace TestsTp
             Assert.That(tarjeta.Saldo, Is.EqualTo(36000), $"El saldo deberia estar en el máximo permitido, pero fue {tarjeta.Saldo}.");
             Assert.That(tarjeta.SaldoPendiente, Is.EqualTo(4000), $"El saldo pendiente deberia ser 4000, pero fue {tarjeta.SaldoPendiente}.");
         }
+
+        //Test Iteracion 3: Acreditacion de saldo
         [Test]
         public void RealizarViaje_AcreditaSaldoPendiente()
         {
@@ -156,5 +159,4 @@ namespace TestsTp
 
     }
 }
-
 

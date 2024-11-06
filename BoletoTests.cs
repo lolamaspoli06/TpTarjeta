@@ -5,7 +5,7 @@ using BoletoNamespace;
 using static TarjetaNamespace.Tarjeta;
 using ManejoDeTiempos;
 
-namespace TestsTp
+namespace BoletoTest
 {
     [TestFixture]
     public class BoletoTest
@@ -13,19 +13,21 @@ namespace TestsTp
         private const decimal tarifa = 940m;
         private TiempoFalso tiempoFalso;
         private Colectivo colectivo;
-        private Tarjeta.BoletoGratuito tarjetaGratuita;
+        private BoletoGratuito tarjetaGratuita;
+        private MedioBoleto medioBoleto;
         private Tarjeta tarjeta;
+        private Tiempo tiempo;
 
         [SetUp]
         public void SetUp()
         {
             tiempoFalso = new TiempoFalso(); // Usamos TiempoFalso para simular el tiempo
             colectivo = new Colectivo("linea 120", tiempoFalso);
-            tarjetaGratuita = new Tarjeta.BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
+            tarjetaGratuita = new BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
         }
 
 
-
+        //Test Iteracion 2 Franquicia de boleto
         [Test]
         public void Test_FranquiciaCompletaSiemprePuedePagar()
         {
@@ -41,7 +43,7 @@ namespace TestsTp
         }
 
 
-
+        //Test Iteracion 2 Franquicia de boleto
         [Test]
         public void Test_MedioBoletoPagaLaMitad()
         {
@@ -61,7 +63,7 @@ namespace TestsTp
 
 
 
-
+        // Test Iteracion 3: posibles boletos
         [Test]
         public void Test_Normal()
         {
@@ -74,10 +76,11 @@ namespace TestsTp
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa), "Es una tarjeta normal, el precio deberia ser completo (940)");
         }
 
+        // Test Iteracion 3: posibles boletos
         [Test]
         public void Test_MedioBoleto()
         {
-            var tarjeta = new MedioBoleto(0);
+            var medioBoleto = new MedioBoleto(0);
             tarjeta.CargarSaldo(2000);
 
             colectivo.PagarCon(tarjeta);
@@ -85,6 +88,19 @@ namespace TestsTp
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa / 2), "Es un medio boleto, el precio deberia ser la mitad (470)");
         }
 
+
+        // Test Iteracion 3: posibles boletos
+        [Test]
+        public void Test_MedioBoletoJubilados()
+        {
+            tarjeta.CargarSaldo(2000);
+
+            colectivo.PagarCon(tarjeta);
+
+            Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa / 2), "Es un medio boleto, el precio deberia ser la mitad (470)");
+        }
+
+        // Test Iteracion 3: posibles boletos
         [Test]
         public void Test_FranquiciaCompleta()
         {
@@ -95,5 +111,18 @@ namespace TestsTp
 
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000), "Es franquicia completa, el precio deberia ser 0");
         }
+
+        //[Test]
+        //public void NoPermiteViajeConMedioBoletoFueraDeHorario()
+        //{
+        //    var medioBoleto = new Tarjeta.MedioBoleto(500);
+        //    tiempo = new Tiempo();
+
+        //    tiempo.AgregarDias(5);
+        //    tiempo.AgregarMinutos(300);
+
+        //    var boleto = colectivo.PagarCon(medioBoleto);
+        //    Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
+        //}
     }
 }

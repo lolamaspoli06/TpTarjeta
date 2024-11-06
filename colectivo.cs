@@ -2,114 +2,53 @@
 using ManejoDeTiempos;
 using static TarjetaNamespace.Tarjeta;
 using TarjetaNamespace;
-
-
 namespace ColectivoNamespace
 {
     public class Colectivo
     {
         public string Linea { get; private set; }
-        private readonly decimal tarifaBasica = 1200;
-        private Tiempo tiempo;
+        private readonly decimal tarifaBasica = 940;
+        private Tiempo tiempo; 
+        public decimal TarifaBasica => tarifaBasica;
 
-        public bool EsInterurbano { get; protected set; } = false;
-
-
-        public Colectivo(string linea, Tiempo tiempo, bool esInterurbano = false)
+        public Colectivo(string linea, Tiempo tiempo)
         {
             this.Linea = linea;
             this.tiempo = tiempo;
-            this.EsInterurbano = esInterurbano;
         }
-
-
-        public Boleto PagarConMedio (MedioBoleto tarjeta)
-        {
-
-            if (!HorarioPermitido(now))
-            {
-
-                return null;
-            }
-            if (tarjeta.ViajesHoy >= 4)
-            {
-                Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
-                totalAbonado = tarjeta.tarifaBasica;
-            }
-
-
-            if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
-            {
-                Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica.");
-                totalAbonado = tarjeta.tarifaBasica;
-                tarjeta.ViajesHoy--;
-            }
-
-        }
-
-        public Boleto PagarConGratuito(BoletoGratuito tarjeta)
-        {
-
-            if (!HorarioPermitido(now))
-            {
-
-                return null;
-            }
-            if (tarjeta.ViajesHoy > 2)
-            {
-                totalAbonado = tarjeta.tarifaBasica;
-                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
-            }
-
-        }
-
-        public Boleto PagarConGratuitoJubilados (BoletoGratuitoJubilados tarjeta)
-        {
-            if (!HorarioPermitido(now))
-            {
-                
-                return null;
-            }
-
-
-
-        }
-
-
         public Boleto PagarCon(Tarjeta tarjeta)
         {
-            DateTime now = tiempo.Now();
-
-
-            decimal totalAbonado = tarjeta.CalcularTarifa();
+            decimal totalAbonado = tarjeta.CalcularTarifa(tarjeta);
             string descripcionExtra = "";
-
             if (tarjeta.SaldoNegativo > 0)
             {
-                descripcionExtra = $"Abona saldo negativo: {tarjeta.SaldoNegativo}";
+                descripcionExtra = $"Abona saldo {tarjeta.SaldoNegativo}";
+            }
+            if (tarjeta is MedioBoleto)
+            {
+
+                if (tarjeta.ViajesHoy >= 4)
+                {
+                    totalAbonado = tarifaBasica;
+                }
+                if ((tiempo.Now() - tarjeta.UltimoUso).TotalMinutes < 1)
+                {
+
+                    totalAbonado = tarifaBasica;
+                    tarjeta.ViajesHoy -= 1;
+                }
             }
 
+            if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
+            {
+                totalAbonado = tarifaBasica;
+            }
             if (tarjeta.DescontarPasaje(totalAbonado))
             {
                 tarjeta.ActualizarUltimoUso();
                 tarjeta.ViajesHoy++;
-
                 return new Boleto(
-                    DateTime.Now,
-                    tarjeta.GetType().Name,
-                    this.Linea,
-                    totalAbonado,
-                    tarjeta.Saldo,
-                    tarjeta.Id.ToString(),
-                    descripcionExtra
-                );
-            }
-            if (tarjeta.DescontarPasaje(totalAbonado))
-            {
-                tarjeta.ActualizarUltimoUso();
-                tarjeta.ViajesHoy++;
-                return new Boleto(
-                    DateTime.Now,
+                    tiempo.Now(),
                     tarjeta.GetType().Name,
                     this.Linea,
                     totalAbonado,
@@ -120,29 +59,5 @@ namespace ColectivoNamespace
             }
             return null;
         }
-
-
-        private bool EsFranquicia(Tarjeta tarjeta)
-        {
-            return tarjeta is MedioBoleto || tarjeta is BoletoGratuito || tarjeta is BoletoGratuitoJubilados; 
-        }
-
-        private bool HorarioPermitido(DateTime fecha)
-        {
-            DayOfWeek dia = fecha.DayOfWeek;
-            int hora = fecha.Hour;
-
-            return dia >= DayOfWeek.Monday && dia <= DayOfWeek.Friday && hora >= 6 && hora < 22;
-        }
-
-
-
     }
-
-/*    public class InterUrbano : Colectivo
-    {
-        public InterUrbano(string linea, Tiempo tiempo, decimal tarifaBasica) : base(linea, tiempo,  tarifaBasica) { }
-
-    }*/
-
 }

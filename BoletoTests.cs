@@ -4,8 +4,7 @@ using ColectivoNamespace;
 using BoletoNamespace;
 using static TarjetaNamespace.Tarjeta;
 using ManejoDeTiempos;
-
-namespace BoletoTest
+namespace BoletoTests
 {
     [TestFixture]
     public class BoletoTest
@@ -13,116 +12,65 @@ namespace BoletoTest
         private const decimal tarifa = 940m;
         private TiempoFalso tiempoFalso;
         private Colectivo colectivo;
-        private BoletoGratuito tarjetaGratuita;
-        private MedioBoleto medioBoleto;
+        private Tarjeta.BoletoGratuito tarjetaGratuita;
         private Tarjeta tarjeta;
-        private Tiempo tiempo;
-
         [SetUp]
         public void SetUp()
         {
             tiempoFalso = new TiempoFalso(); // Usamos TiempoFalso para simular el tiempo
             colectivo = new Colectivo("linea 120", tiempoFalso);
-            tarjetaGratuita = new BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
+            tarjetaGratuita = new Tarjeta.BoletoGratuito(tarifa); // Inicializamos la tarjeta con saldo suficiente
         }
-
-
-        //Test Iteracion 2 Franquicia de boleto
         [Test]
+        //Test Iteracion 2
         public void Test_FranquiciaCompletaSiemprePuedePagar()
         {
-
             tarjeta = new BoletoGratuito(0);
             colectivo = new Colectivo("Línea 120", tiempoFalso);
             tarjeta.CargarSaldo(0);
-
-
             colectivo.PagarCon(tarjeta);
-
             Assert.AreEqual(0, tarjeta.Saldo, "El saldo no deberia cambiar, ya que la tarjeta de Franquicia Completa no paga.");
         }
-
-
-        //Test Iteracion 2 Franquicia de boleto
         [Test]
+
+        //Test Iteracion 2
         public void Test_MedioBoletoPagaLaMitad()
         {
-
             var tarjeta = new MedioBoleto(0);
             var colectivo = new Colectivo("Línea 120", tiempoFalso);
             tarjeta.CargarSaldo(2000);
-
-
             colectivo.PagarCon(tarjeta);
-
-
             int saldoEsperado = 2000 - (940 / 2);
             Assert.AreEqual(saldoEsperado, tarjeta.Saldo, "El saldo deberia haberse descontado solo la mitad del boleto.");
         }
 
-
-
-
-        // Test Iteracion 3: posibles boletos
+        //Test Iteracion 3
         [Test]
         public void Test_Normal()
         {
             var tarjeta = new Tarjeta(0);
-
             tarjeta.CargarSaldo(2000);
-
             colectivo.PagarCon(tarjeta);
-
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa), "Es una tarjeta normal, el precio deberia ser completo (940)");
         }
 
-        // Test Iteracion 3: posibles boletos
+        //Test Iteracion 3
         [Test]
         public void Test_MedioBoleto()
         {
-            var medioBoleto = new MedioBoleto(0);
+            var tarjeta = new MedioBoleto(0);
             tarjeta.CargarSaldo(2000);
-
             colectivo.PagarCon(tarjeta);
-
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa / 2), "Es un medio boleto, el precio deberia ser la mitad (470)");
         }
-
-
-        // Test Iteracion 3: posibles boletos
         [Test]
-        public void Test_MedioBoletoJubilados()
-        {
-            tarjeta.CargarSaldo(2000);
-
-            colectivo.PagarCon(tarjeta);
-
-            Assert.That(tarjeta.Saldo, Is.EqualTo(2000 - tarifa / 2), "Es un medio boleto, el precio deberia ser la mitad (470)");
-        }
-
-        // Test Iteracion 3: posibles boletos
-        [Test]
+        //Test Iteracion 3
         public void Test_FranquiciaCompleta()
         {
             var tarjeta = new BoletoGratuito(0);
             tarjeta.CargarSaldo(2000);
-
             colectivo.PagarCon(tarjeta);
-
             Assert.That(tarjeta.Saldo, Is.EqualTo(2000), "Es franquicia completa, el precio deberia ser 0");
         }
-
-        //[Test]
-        //public void NoPermiteViajeConMedioBoletoFueraDeHorario()
-        //{
-        //    var medioBoleto = new Tarjeta.MedioBoleto(500);
-        //    tiempo = new Tiempo();
-
-        //    tiempo.AgregarDias(5);
-        //    tiempo.AgregarMinutos(300);
-
-        //    var boleto = colectivo.PagarCon(medioBoleto);
-        //    Assert.IsNull(boleto, "No se debería permitir un viaje con Medio Boleto fuera del horario permitido.");
-        //}
     }
 }

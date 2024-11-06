@@ -22,15 +22,63 @@ namespace ColectivoNamespace
             this.EsInterurbano = esInterurbano;
         }
 
+
+        public Boleto PagarConMedio (MedioBoleto tarjeta)
+        {
+
+            if (!HorarioPermitido(now))
+            {
+
+                return null;
+            }
+            if (tarjeta.ViajesHoy >= 4)
+            {
+                Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
+                totalAbonado = tarjeta.tarifaBasica;
+            }
+
+
+            if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
+            {
+                Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica.");
+                totalAbonado = tarjeta.tarifaBasica;
+                tarjeta.ViajesHoy--;
+            }
+
+        }
+
+        public Boleto PagarConGratuito(BoletoGratuito tarjeta)
+        {
+
+            if (!HorarioPermitido(now))
+            {
+
+                return null;
+            }
+            if (tarjeta.ViajesHoy > 2)
+            {
+                totalAbonado = tarjeta.tarifaBasica;
+                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
+            }
+
+        }
+
+        public Boleto PagarConGratuitoJubilados (BoletoGratuitoJubilados tarjeta)
+        {
+            if (!HorarioPermitido(now))
+            {
+                
+                return null;
+            }
+
+
+
+        }
+
+
         public Boleto PagarCon(Tarjeta tarjeta)
         {
             DateTime now = tiempo.Now();
-
-            if (EsFranquicia(tarjeta) && !HorarioPermitido(now))
-            {
-                Console.WriteLine("No se puede usar esta franquicia fuera del horario permitido (Lunes a Viernes de 6 a 22).");
-                return null;
-            }
 
 
             decimal totalAbonado = tarjeta.CalcularTarifa();
@@ -39,30 +87,6 @@ namespace ColectivoNamespace
             if (tarjeta.SaldoNegativo > 0)
             {
                 descripcionExtra = $"Abona saldo negativo: {tarjeta.SaldoNegativo}";
-            }
-
-            if (tarjeta is MedioBoleto medioBoleto)
-            {
-                if (tarjeta.ViajesHoy >= 4)
-                {
-                    Console.WriteLine("No se puede usar medio boleto más de 4 veces por día. Se cobra tarifa básica.");
-                    totalAbonado = tarjeta.tarifaBasica;
-                }
-
-
-                if ((DateTime.Now - tarjeta.UltimoUso).TotalMinutes < 5)
-                {
-                    Console.WriteLine("No se puede usar la tarjeta de medio boleto antes de 5 minutos. Se cobra tarifa básica.");
-                    totalAbonado = tarjeta.tarifaBasica;
-                    tarjeta.ViajesHoy--;
-                }
-            }
-
-
-            if (tarjeta is BoletoGratuito && tarjeta.ViajesHoy > 2)
-            {
-                totalAbonado = tarjeta.tarifaBasica;
-                Console.WriteLine("No se puede usar boleto gratuito más de 2 veces por día. Se cobra tarifa básica.");
             }
 
             if (tarjeta.DescontarPasaje(totalAbonado))

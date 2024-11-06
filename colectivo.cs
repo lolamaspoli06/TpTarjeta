@@ -100,7 +100,7 @@ namespace ColectivoNamespace
 
         private bool EsFranquicia(Tarjeta tarjeta)
         {
-            return tarjeta is MedioBoleto || tarjeta is Tarjeta.BoletoGratuito; // Agrega otras franquicias si tienes más
+            return tarjeta is MedioBoleto || tarjeta is BoletoGratuito || tarjeta is BoletoGratuitoJubilados; 
         }
 
         private bool HorarioPermitido(DateTime fecha)
